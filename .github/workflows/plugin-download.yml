@@ -1,0 +1,37 @@
+name: Publish macOS plugin download
+on:
+  push:
+    branches: [codex/plugin-download]
+    paths: ['.github/workflows/plugin-download.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Retrieve the validated macOS package
+        run: |
+          mkdir -p bundle
+          gh run download 41128052937 --repo lovepete-design/Jim --name triad-audio-macos-universal --dir bundle
+          test -s bundle/triad-audio-macos.zip
+          unzip -t bundle/triad-audio-macos.zip
+      - name: Publish direct download
+        run: |
+          cat > release-notes.md <<'NOTES'
+          Hex MkI, Stress, and Lattice VST3 plugins for macOS 11 or later.
+
+          Universal binaries include Apple Silicon and Intel. DSP and VST3 audio/editor/state tests passed on the Apple Silicon macOS runner. Ad hoc signed; not notarized.
+
+          Download triad-audio-macos.zip below, unzip it, then run bash macos/install-macos.sh from the extracted folder. Close and reopen your VST3-compatible DAW and rescan.
+
+          Full corresponding source and license notices are included in the ZIP. These are development builds; physical hardware accuracy has not been measured.
+          NOTES
+          if ! gh release view v0.1.0-macos --repo lovepete-design/Jim >/dev/null 2>&1; then
+            gh release create v0.1.0-macos --repo lovepete-design/Jim --target 608d9cfd6ec1642fffce12801603aa9fd357b2fd --prerelease --title "Triad Audio 0.1.0 — macOS VST3" --notes-file release-notes.md
+          fi
+          gh release upload v0.1.0-macos bundle/triad-audio-macos.zip --repo lovepete-design/Jim --clobber
