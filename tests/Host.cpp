@@ -9,6 +9,10 @@
 #include <string>
 #include <vector>
 
+#if JUCE_MAC
+namespace juce { void initialiseNSApplication(); }
+#endif
+
 namespace {
 constexpr int blockSize = 256;
 constexpr double pi = 3.14159265358979323846;
@@ -218,12 +222,15 @@ void validate(juce::VST3PluginFormat& format, const juce::String& path, bool syn
     const auto description = *descriptions[0];
     std::cout << "Validating " << description.name << "..." << std::endl;
     auto plugin = instantiate(format, description);
+    std::cout << "  Instantiated" << std::endl;
     require(plugin->acceptsMidi() == synth, description.name + ": unexpected MIDI capability");
     require(plugin->getTotalNumInputChannels() == (synth ? 0 : 2), description.name + ": unexpected input layout");
     validateParameters(*plugin);
     const auto defaultRender = render(*plugin, synth, 48000);
     juce::ignoreUnused(defaultRender);
+    std::cout << "  Rendered audio; opening editor" << std::endl;
     editorCheck(*plugin, screenshotDirectory);
+    std::cout << "  Editor opened and closed" << std::endl;
 
     auto* output = outputParameter(*plugin);
     setParameter(*output, .43f);
@@ -293,6 +300,10 @@ int main(int argc, char** argv) {
         }
         require(paths.size() == 3, "Usage: triad_host Hex-MkI.vst3 Stress.vst3 Lattice.vst3 [--screenshots DIR]");
         TestDisplay display;
+       #if JUCE_MAC
+        // A console main bypasses JUCEApplicationBase's Cocoa application setup.
+        juce::initialiseNSApplication();
+       #endif
         juce::ScopedJuceInitialiser_GUI initialiser;
         juce::VST3PluginFormat format;
         for (std::size_t index = 0; index < paths.size(); ++index)

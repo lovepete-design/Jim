@@ -25,6 +25,15 @@ cmake -S "$project_root" -B "$build_dir" \
 cmake --build "$build_dir" --config Release \
     --target HexMkI_VST3 Stress_VST3 Lattice_VST3 triad_tests triad_host \
     --parallel "${CMAKE_BUILD_PARALLEL_LEVEL:-$(sysctl -n hw.logicalcpu)}"
+# The manifest helper writes resources after the initial link-time signature.
+# Refresh the final bundles before loading them in the validation host.
+targets=(HexMkI Stress Lattice)
+products=('Hex MkI' Stress Lattice)
+for index in 0 1 2; do
+    built_bundle="$build_dir/${targets[$index]}_artefacts/Release/VST3/${products[$index]}.vst3"
+    codesign --force --deep --sign - "$built_bundle"
+    codesign --verify --deep --strict "$built_bundle"
+done
 ctest --test-dir "$build_dir" -C Release --output-on-failure
 
 mkdir -p "$project_root/dist"
