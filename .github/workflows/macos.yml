@@ -34,7 +34,7 @@ jobs:
         shell: bash
         run: |
           if [[ -x build-macos/triad_host_artefacts/Release/triad_host ]]; then
-            lldb --batch -o run -o 'thread backtrace all' -- \
+            lldb --batch -o run -k 'thread backtrace all' -- \
               build-macos/triad_host_artefacts/Release/triad_host \
               "$PWD/build-macos/HexMkI_artefacts/Release/VST3/Hex MkI.vst3" \
               "$PWD/build-macos/Stress_artefacts/Release/VST3/Stress.vst3" \
