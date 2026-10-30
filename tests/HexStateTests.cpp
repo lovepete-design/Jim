@@ -50,24 +50,25 @@ void browserCheck(TriadProcessor& processor)
     auto* next=dynamic_cast<juce::TextButton*>(browser.findChildWithID("hex-next"));
     auto* previous=dynamic_cast<juce::TextButton*>(browser.findChildWithID("hex-prev"));
     require(list && search && folders && next && previous,"Browser controls missing");
-    for (int attempt=0;attempt<100 && list->getModel()->getNumRows()!=2;++attempt) dispatch();
-    require(list->getModel()->getNumRows()==2,"Persisted browser failed to load asynchronously");
+    for (int attempt=0;attempt<100 && list->getListBoxModel()->getNumRows()!=2;++attempt) dispatch();
+    require(list->getListBoxModel()->getNumRows()==2,"Persisted browser failed to load asynchronously");
     require(folders->getNumItems()==4,"Nested browser folder hierarchy missing");
     list->selectRow(0);
     require(processor.loadedVoiceName()=="FIRST","Clicking a browser row did not select its patch");
     search->setText("SECOND",true); dispatch();
-    require(list->getModel()->getNumRows()==1,"Browser search failed");
+    require(list->getListBoxModel()->getNumRows()==1,"Browser search failed");
     require(processor.loadedVoiceName()=="FIRST","Filtering unexpectedly changed the current sound");
     next->triggerClick(); dispatch();
     require(processor.loadedVoiceName()=="SECOND","Next did not load the filtered sound");
-    search->clear(); dispatch();
+    search->onEscapeKey(); dispatch();
+    require(list->getListBoxModel()->getNumRows()==2,"Escape did not clear the search filter");
     previous->triggerClick(); dispatch();
     require(processor.loadedVoiceName()=="FIRST","Previous did not move through sounds");
     list->keyPressed(juce::KeyPress(juce::KeyPress::downKey));
     require(processor.loadedVoiceName()=="SECOND","Arrow-key sound browsing failed");
     // Folder filtering and a library refresh must preserve the selected voice.
     folders->setSelectedId(4,juce::sendNotificationSync); dispatch();
-    require(list->getModel()->getNumRows()==2,"Nested folder filtering lost sounds");
+    require(list->getListBoxModel()->getNumRows()==2,"Nested folder filtering lost sounds");
     std::cout<<"PASS: persisted browser, nested folders, search, previous/next, and arrow-key sound selection.\n";
 }
 std::vector<float> render(TriadProcessor& processor)

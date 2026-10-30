@@ -1,5 +1,6 @@
 #include "HexBrowser.h"
 #include "Plugin.h"
+#include <set>
 
 #if TRIAD_KIND == 0
 namespace
@@ -37,7 +38,7 @@ HexBrowser::HexBrowser (TriadProcessor& p, juce::File libraryRoot)
     search.setColour (juce::TextEditor::outlineColourId, juce::Colour (0xff35414a));
     search.setTooltip ("Search the names and folder paths of your imported sounds.");
     search.onTextChange = [this] { filter(); };
-    search.onEscapeKey = [this] { search.clear(); };
+    search.onEscapeKey = [this] { search.setText ({}, true); };
     folderFilter.setName ("Library folders");
     folderFilter.setComponentID ("hex-folders");
     folderFilter.setTooltip ("Browse a folder and all of its subfolders.");
@@ -231,17 +232,19 @@ void HexBrowser::rebuildFolders()
 {
     const auto selected = folderFilter.getSelectedId() > 1 ? folderFilter.getText() : juce::String();
     folders.clear();
+    std::set<juce::String> uniqueFolders;
     for (const auto& entry : entries)
     {
         auto path = entry.folder;
         while (path.isNotEmpty())
         {
-            folders.addIfNotAlreadyThere (path);
+            if (! uniqueFolders.insert (path).second) break;
             const auto slash = path.lastIndexOfChar ('/');
             if (slash < 0) break;
             path = path.substring (0, slash);
         }
     }
+    for (const auto& path : uniqueFolders) folders.add (path);
     folders.sort (true);
     folderFilter.clear (juce::dontSendNotification);
     folderFilter.addItem ("All folders", 1);
