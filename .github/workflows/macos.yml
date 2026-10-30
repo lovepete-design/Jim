@@ -10,7 +10,7 @@ permissions:
   contents: read
 jobs:
   build:
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
@@ -25,8 +25,8 @@ jobs:
           path: |
             build-macos
             third_party/JUCE
-          key: triad-macos14-v1-${{ github.sha }}
-          restore-keys: triad-macos14-v1-
+          key: triad-macos15-v1-${{ github.sha }}
+          restore-keys: triad-macos15-v1-
       - name: Build universal VST3, run tests, and package source
         run: bash scripts/build-macos.sh
       - name: Diagnose failed Mac host validation
@@ -46,7 +46,7 @@ jobs:
           path: |
             build-macos
             third_party/JUCE
-          key: triad-macos14-v1-${{ github.sha }}
+          key: triad-macos15-v1-${{ github.sha }}
       - name: Upload universal macOS package
         uses: actions/upload-artifact@v4
         with:
