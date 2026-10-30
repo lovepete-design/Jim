@@ -1,0 +1,55 @@
+name: macOS VST3
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, work]
+    paths-ignore: ['dist/**']
+  pull_request:
+    paths-ignore: ['dist/**']
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Install CMake if unavailable
+        shell: bash
+        run: command -v cmake >/dev/null || brew install cmake
+      - uses: actions/cache/restore@v4
+        id: build-cache
+        with:
+          path: |
+            build-macos
+            third_party/JUCE
+          key: triad-macos15-v1-${{ github.sha }}
+          restore-keys: triad-macos15-v1-
+      - name: Build universal VST3, run tests, and package source
+        run: bash scripts/build-macos.sh
+      - name: Diagnose failed Mac host validation
+        if: failure()
+        shell: bash
+        run: |
+          if [[ -x build-macos/triad_host_artefacts/Release/triad_host ]]; then
+            lldb --batch -o run -k 'thread backtrace all' -- \
+              build-macos/triad_host_artefacts/Release/triad_host \
+              "$PWD/build-macos/HexMkI_artefacts/Release/VST3/Hex MkI.vst3" \
+              "$PWD/build-macos/Stress_artefacts/Release/VST3/Stress.vst3" \
+              "$PWD/build-macos/Lattice_artefacts/Release/VST3/Lattice.vst3" || true
+          fi
+      - uses: actions/cache/save@v4
+        if: always() && steps.build-cache.outputs.cache-hit != 'true'
+        with:
+          path: |
+            build-macos
+            third_party/JUCE
+          key: triad-macos15-v1-${{ github.sha }}
+      - name: Upload universal macOS package
+        uses: actions/upload-artifact@v4
+        with:
+          name: triad-audio-macos-universal
+          path: dist/triad-audio-macos.zip
+          if-no-files-found: error
