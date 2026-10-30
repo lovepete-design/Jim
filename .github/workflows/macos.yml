@@ -1,0 +1,29 @@
+name: macOS VST3
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, work]
+    paths-ignore: ['dist/**']
+  pull_request:
+    paths-ignore: ['dist/**']
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: macos-14
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Install CMake if unavailable
+        shell: bash
+        run: command -v cmake >/dev/null || brew install cmake
+      - name: Build universal VST3, run tests, and package source
+        run: bash scripts/build-macos.sh
+      - name: Upload universal macOS package
+        uses: actions/upload-artifact@v4
+        with:
+          name: triad-audio-macos-universal
+          path: dist/triad-audio-macos.zip
+          if-no-files-found: error
