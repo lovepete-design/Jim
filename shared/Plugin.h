@@ -42,6 +42,11 @@ public:
     juce::StringArray presetNames() const;
     void selectPreset(int);
     juce::Result loadSysexFile(const juce::File&);
+#if TRIAD_KIND == 0
+    void loadLibraryVoice(const std::array<unsigned char,155>&, const juce::String& name, const juce::String& id);
+    juce::String loadedVoiceName() const;
+    juce::String loadedVoiceId() const;
+#endif
     juce::AudioProcessorValueTreeState parameters;
     juce::MidiKeyboardState keyboardState;
 
@@ -71,7 +76,8 @@ private:
     std::atomic<int> patchMiddle{1};
     int patchFront=0, patchBack=2;
     Patch savedPatch{};
-    std::recursive_mutex patchProducerMutex;
+    mutable std::recursive_mutex patchProducerMutex;
+    juce::String savedVoiceName{"Glass tine"}, savedVoiceId;
     bool queuePatch(const Patch&);
 #elif TRIAD_KIND == 1
     triad::Dynamics engine;

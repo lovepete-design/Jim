@@ -23,7 +23,7 @@ cmake -S "$project_root" -B "$build_dir" \
     "-DCMAKE_OSX_ARCHITECTURES=$architectures" \
     "-DCMAKE_OSX_DEPLOYMENT_TARGET=$deployment_target"
 cmake --build "$build_dir" --config Release \
-    --target HexMkI_VST3 Stress_VST3 Lattice_VST3 triad_tests triad_host \
+    --target HexMkI_VST3 Stress_VST3 Lattice_VST3 triad_tests triad_host triad_library_tests triad_hex_state_tests \
     --parallel "${CMAKE_BUILD_PARALLEL_LEVEL:-$(sysctl -n hw.logicalcpu)}"
 # The manifest helper writes resources after the initial link-time signature.
 # Refresh the final bundles before loading them in the validation host.

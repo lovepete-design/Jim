@@ -259,6 +259,8 @@ void TriadProcessor::selectPreset(int index)
         for(int op=0;op<6;++op) patch[static_cast<size_t>(op*21+18)]=static_cast<unsigned char>(1+op*2);
     }
     if (!queuePatch(patch)) return;
+    savedVoiceName=presetNames()[index];
+    savedVoiceId.clear();
     setValue("algorithm",patch[134]+1.f); setValue("feedback",patch[135]); setValue("tune",0); setValue("output",-12);
 #elif TRIAD_KIND == 1
     const float values[][9]={{0,0,5,100,3,100,0,0,0},{18,-8,.3f,70,6,100,2,1,0},{8,1,8,240,2,100,1,1,1},{20,-6,10,350,4,30,1,1,0}};
@@ -281,6 +283,27 @@ bool TriadProcessor::queuePatch(const Patch& patch)
     patchBack=patchMiddle.exchange(patchBack|4,std::memory_order_acq_rel)&3;
     return true;
 }
+void TriadProcessor::loadLibraryVoice(const Patch& patch,const juce::String& name,const juce::String& voiceId)
+{
+    // Library entries have passed the strict DX7 parser. The handoff is the same
+    // bounded, lock-free triple buffer used for SysEx and project restoration.
+    const std::lock_guard<std::recursive_mutex> guard(patchProducerMutex);
+    queuePatch(patch);
+    savedVoiceName=name.substring(0,128);
+    savedVoiceId=voiceId.substring(0,1024);
+    setValue("algorithm",patch[134]+1.f);
+    setValue("feedback",patch[135]);
+}
+juce::String TriadProcessor::loadedVoiceName() const
+{
+    const std::lock_guard<std::recursive_mutex> guard(patchProducerMutex);
+    return savedVoiceName;
+}
+juce::String TriadProcessor::loadedVoiceId() const
+{
+    const std::lock_guard<std::recursive_mutex> guard(patchProducerMutex);
+    return savedVoiceId;
+}
 #endif
 juce::Result TriadProcessor::loadSysexFile(const juce::File& file)
 {
@@ -293,6 +316,8 @@ juce::Result TriadProcessor::loadSysexFile(const juce::File& file)
         return juce::Result::fail("Invalid DX7 SysEx format, parameter range, or checksum.");
     const std::lock_guard<std::recursive_mutex> guard(patchProducerMutex);
     queuePatch(patch);
+    savedVoiceName=file.getFileNameWithoutExtension();
+    savedVoiceId.clear();
     setValue("algorithm",patch[134]+1.f); setValue("feedback",patch[135]);
     return juce::Result::ok();
 #else
@@ -311,6 +336,8 @@ void TriadProcessor::getStateInformation(juce::MemoryBlock& destination)
 #if TRIAD_KIND == 0
     {
         state.setProperty("patch",juce::Base64::toBase64(savedPatch.data(),savedPatch.size()),nullptr);
+        state.setProperty("voiceName",savedVoiceName,nullptr);
+        state.setProperty("voiceId",savedVoiceId,nullptr);
     }
 #endif
     if (auto xml=state.createXml()) copyXmlToBinary(*xml,destination);
@@ -337,6 +364,8 @@ void TriadProcessor::setStateInformation(const void* data,int size)
     sysex[161]=static_cast<unsigned char>((128-(sum&127))&127); sysex[162]=0xf7;
     Patch checked{};
     if (!triad::HexEngine::parseSysex(sysex.data(),sysex.size(),checked) || !queuePatch(checked)) return;
+    savedVoiceName=state.getProperty("voiceName",juce::String::fromUTF8(reinterpret_cast<const char*>(checked.data()+145),10).trim()).toString().substring(0,128);
+    savedVoiceId=state.getProperty("voiceId").toString().substring(0,1024);
 #endif
     parameters.replaceState(state);
     currentProgram.store(juce::jlimit(0,presetNames().size()-1,static_cast<int>(state.getProperty("program",0))));

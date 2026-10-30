@@ -1,5 +1,8 @@
 #include "Editor.h"
 #include "Plugin.h"
+#if TRIAD_KIND == 0
+#include "HexBrowser.h"
+#endif
 
 namespace
 {
@@ -175,14 +178,13 @@ struct TriadEditor::Content
         editor.addAndMakeVisible (meter);
 
        #if TRIAD_KIND == 0
+        presetLabel.setText ("FACTORY PRESET", juce::dontSendNotification);
         addKnob ("algorithm", "Algorithm", "", "Choose one of the DX7's 32 operator routings.");
         addKnob ("feedback", "Feedback", "", "Feedback around the algorithm's feedback operator.");
         addKnob ("tune", "Fine tune", " ct", "Global pitch offset in cents.");
         addKnob ("output", "Output", " dB", "Output level after the FM voice engine.");
-        importButton.setButtonText ("Import DX7 SysEx");
-        importButton.setTooltip ("Load a DX7 single-voice or 32-voice bank .syx file.");
-        importButton.onClick = [this] { importSysex(); };
-        editor.addAndMakeVisible (importButton);
+        browser = std::make_unique<HexBrowser> (processor);
+        editor.addAndMakeVisible (*browser);
        #elif TRIAD_KIND == 1
         addKnob ("input", "Input", " dB", "Drive the fixed -18 dBFS compression threshold.");
         addKnob ("attack", "Attack", " ms", "Time for gain reduction to respond to transients.");
@@ -239,45 +241,31 @@ struct TriadEditor::Content
         knobs.push_back (std::move (knob));
     }
 
-    void importSysex()
-    {
-        chooser = std::make_unique<juce::FileChooser> ("Import a DX7 voice or bank", juce::File {}, "*.syx");
-        const juce::Component::SafePointer<TriadEditor> safe (&editor);
-        chooser->launchAsync (juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles,
-            [safe] (const juce::FileChooser& fc)
-            {
-                if (safe == nullptr) return;
-                const auto file = fc.getResult();
-                if (! file.existsAsFile()) return;
-                const auto result = safe->content->processor.loadSysexFile (file);
-                if (result.failed())
-                    juce::AlertWindow::showMessageBoxAsync (juce::MessageBoxIconType::WarningIcon,
-                                                           "Could not import voice", result.getErrorMessage());
-                else
-                    safe->content->presets.setText (file.getFileNameWithoutExtension(), juce::dontSendNotification);
-            });
-    }
-
     TriadEditor& editor;
     TriadProcessor& processor;
     StudioLook look;
     Meter meter;
     juce::Label presetLabel;
     juce::ComboBox presets, ratio, distortion;
-    juce::TextButton importButton;
+   #if TRIAD_KIND == 0
+    std::unique_ptr<HexBrowser> browser;
+   #endif
     juce::ToggleButton highpass, emphasis;
     juce::MidiKeyboardComponent keyboard;
     juce::TooltipWindow tooltips;
     std::vector<std::unique_ptr<Knob>> knobs;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> ratioAttachment, distortionAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> highpassAttachment, emphasisAttachment;
-    std::unique_ptr<juce::FileChooser> chooser;
 };
 
 TriadEditor::TriadEditor (TriadProcessor& p) : juce::AudioProcessorEditor (p)
 {
     content = std::make_unique<Content> (*this, p);
-   #if TRIAD_KIND == 2
+   #if TRIAD_KIND == 0
+    setResizeLimits (1100, 660, 1100, 1000);
+    setResizable (true, true);
+    setSize (1100, 720);
+   #elif TRIAD_KIND == 2
     setSize (960, 700);
    #else
     setSize (960, 600);
@@ -294,6 +282,9 @@ TriadEditor::~TriadEditor()
 void TriadEditor::timerCallback()
 {
     content->meter.repaint();
+   #if TRIAD_KIND == 0
+    content->browser->syncFromProcessor();
+   #endif
 }
 
 void TriadEditor::paint (juce::Graphics& g)
@@ -311,7 +302,9 @@ void TriadEditor::paint (juce::Graphics& g)
     g.setFont (font (13.0f));
     g.drawText (p.subtitle(), 30, 92, 660, 22, juce::Justification::centredLeft);
     g.setColour (juce::Colour (panel));
-   #if TRIAD_KIND == 2
+   #if TRIAD_KIND == 0
+    g.fillRoundedRectangle (20.0f, 136.0f, 1060.0f, 200.0f, 10.0f);
+   #elif TRIAD_KIND == 2
     g.fillRoundedRectangle (20.0f, 136.0f, 920.0f, 408.0f, 10.0f);
    #else
     g.fillRoundedRectangle (20.0f, 136.0f, 920.0f, 316.0f, 10.0f);
@@ -320,22 +313,9 @@ void TriadEditor::paint (juce::Graphics& g)
     g.setFont (font (11.0f, true));
    #if TRIAD_KIND == 0
     g.drawText ("VOICE ENGINE", 42, 151, 400, 20, juce::Justification::centredLeft);
-    g.setColour (p.accent());
-    for (int i = 0; i < 6; ++i)
-    {
-        const float x = 79.0f + (float) i * 102.0f;
-        g.fillRoundedRectangle (x, 362.0f, 66.0f, 36.0f, 4.0f);
-        g.setColour (juce::Colour (background));
-        g.setFont (font (13.0f, true));
-        g.drawText ("OP " + juce::String (6 - i), (int) x, 362, 66, 36, juce::Justification::centred);
-        g.setColour (p.accent());
-    }
-    g.setColour (juce::Colour (muted));
     g.setFont (font (12.0f));
-    g.drawText ("Six-operator FM  /  DX7 voice envelopes  /  Original SysEx voices", 42, 412, 670, 23,
-                juce::Justification::centredLeft);
-    g.drawText ("Play with MIDI or the keyboard below. Sustain: CC64. Pitch bend: ±2 semitones.",
-                30, 468, 890, 25, juce::Justification::centredLeft);
+    g.drawText ("Import once. Browse here. Play with MIDI or the keyboard below.",
+                30, getHeight() - 117, 1040, 20, juce::Justification::centredLeft);
    #elif TRIAD_KIND == 1
     g.drawText ("DYNAMICS & COLOUR", 42, 151, 400, 20, juce::Justification::centredLeft);
     g.drawText ("RATIO", 46, 356, 120, 20, juce::Justification::centredLeft);
@@ -367,11 +347,13 @@ void TriadEditor::resized()
     content->presetLabel.setBounds (690, 34, 220, 20);
     content->presets.setBounds (690, 58, 240, 33);
    #if TRIAD_KIND == 0
+    content->presetLabel.setBounds (830, 34, 220, 20);
+    content->presets.setBounds (830, 58, 240, 33);
     for (int i = 0; i < 4; ++i)
-        content->knobs[(size_t) i]->setBounds (45 + i * 167, 187, 144, 146);
-    content->meter.setBounds (766, 184, 142, 238);
-    content->importButton.setBounds (690, 98, 240, 28);
-    content->keyboard.setBounds (30, 506, 900, 62);
+        content->knobs[(size_t) i]->setBounds (40 + i * 190, 176, 156, 147);
+    content->meter.setBounds (860, 155, 184, 165);
+    content->browser->setBounds (20, 350, 1060, getHeight() - 470);
+    content->keyboard.setBounds (30, getHeight() - 90, 1040, 58);
    #elif TRIAD_KIND == 1
     for (int i = 0; i < 5; ++i)
         content->knobs[(size_t) i]->setBounds (35 + i * 145, 184, 136, 155);
