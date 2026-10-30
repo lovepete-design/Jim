@@ -1,0 +1,682 @@
+[
+  {
+    "name": "VELVET EP",
+    "label": "Velvet EP",
+    "category": "Keys",
+    "description": "A mellow electric piano with a rounded body, a soft tine transient, and a long natural decay.",
+    "demo": "keys",
+    "algorithm": 5,
+    "feedback": 0,
+    "transpose": 24,
+    "lfo": {
+      "speed": 31,
+      "delay": 0,
+      "pmd": 0,
+      "amd": 0,
+      "sync": 1,
+      "wave": 4,
+      "pms": 0
+    },
+    "operators": [
+      {
+        "level": 98,
+        "coarse": 1,
+        "rates": [
+          96,
+          47,
+          31,
+          68
+        ],
+        "levels": [
+          99,
+          83,
+          0,
+          0
+        ],
+        "velocity": 2,
+        "rate_scaling": 1,
+        "right_depth": 8
+      },
+      {
+        "level": 61,
+        "coarse": 1,
+        "rates": [
+          99,
+          65,
+          43,
+          74
+        ],
+        "levels": [
+          99,
+          67,
+          0,
+          0
+        ],
+        "velocity": 5,
+        "rate_scaling": 1,
+        "right_depth": 15
+      },
+      {
+        "level": 90,
+        "coarse": 1,
+        "detune": 6,
+        "rates": [
+          97,
+          44,
+          29,
+          68
+        ],
+        "levels": [
+          99,
+          80,
+          0,
+          0
+        ],
+        "velocity": 2,
+        "rate_scaling": 1,
+        "right_depth": 10
+      },
+      {
+        "level": 47,
+        "coarse": 7,
+        "rates": [
+          99,
+          74,
+          57,
+          78
+        ],
+        "levels": [
+          99,
+          48,
+          0,
+          0
+        ],
+        "velocity": 6,
+        "rate_scaling": 2,
+        "right_depth": 26
+      },
+      {
+        "level": 74,
+        "coarse": 2,
+        "rates": [
+          99,
+          64,
+          42,
+          73
+        ],
+        "levels": [
+          99,
+          70,
+          0,
+          0
+        ],
+        "velocity": 3,
+        "rate_scaling": 1,
+        "right_depth": 18
+      },
+      {
+        "level": 42,
+        "coarse": 3,
+        "rates": [
+          99,
+          78,
+          64,
+          80
+        ],
+        "levels": [
+          99,
+          25,
+          0,
+          0
+        ],
+        "velocity": 6,
+        "rate_scaling": 2,
+        "right_depth": 30
+      }
+    ]
+  },
+  {
+    "name": "GLASSTINE",
+    "label": "Glass Tine",
+    "category": "Keys",
+    "description": "A bright, velocity-responsive FM keyboard with a glassy attack and a clear ringing body.",
+    "demo": "keys",
+    "algorithm": 5,
+    "feedback": 1,
+    "transpose": 24,
+    "lfo": {
+      "speed": 31,
+      "delay": 0,
+      "pmd": 0,
+      "amd": 0,
+      "sync": 1,
+      "wave": 4,
+      "pms": 0
+    },
+    "operators": [
+      {
+        "level": 97,
+        "coarse": 1,
+        "rates": [
+          99,
+          50,
+          35,
+          70
+        ],
+        "levels": [
+          99,
+          86,
+          0,
+          0
+        ],
+        "velocity": 2,
+        "rate_scaling": 1,
+        "right_depth": 9
+      },
+      {
+        "level": 68,
+        "coarse": 3,
+        "rates": [
+          99,
+          63,
+          41,
+          74
+        ],
+        "levels": [
+          99,
+          68,
+          0,
+          0
+        ],
+        "velocity": 6,
+        "rate_scaling": 1,
+        "right_depth": 18
+      },
+      {
+        "level": 93,
+        "coarse": 1,
+        "detune": 8,
+        "rates": [
+          99,
+          47,
+          33,
+          70
+        ],
+        "levels": [
+          99,
+          81,
+          0,
+          0
+        ],
+        "velocity": 2,
+        "rate_scaling": 1,
+        "right_depth": 12
+      },
+      {
+        "level": 61,
+        "coarse": 7,
+        "rates": [
+          99,
+          69,
+          49,
+          76
+        ],
+        "levels": [
+          99,
+          58,
+          0,
+          0
+        ],
+        "velocity": 7,
+        "rate_scaling": 2,
+        "right_depth": 30
+      },
+      {
+        "level": 77,
+        "coarse": 2,
+        "rates": [
+          99,
+          65,
+          47,
+          76
+        ],
+        "levels": [
+          99,
+          65,
+          0,
+          0
+        ],
+        "velocity": 3,
+        "rate_scaling": 1,
+        "right_depth": 22
+      },
+      {
+        "level": 48,
+        "coarse": 14,
+        "rates": [
+          99,
+          81,
+          61,
+          82
+        ],
+        "levels": [
+          99,
+          36,
+          0,
+          0
+        ],
+        "velocity": 5,
+        "rate_scaling": 2,
+        "right_depth": 38
+      }
+    ]
+  },
+  {
+    "name": "TOY KEYS",
+    "label": "Toy Keys",
+    "category": "Keys",
+    "description": "A compact toy-piano chime with inharmonic upper partials and a short, delicate decay.",
+    "demo": "keys",
+    "algorithm": 5,
+    "feedback": 0,
+    "transpose": 24,
+    "lfo": {
+      "speed": 30,
+      "delay": 0,
+      "pmd": 0,
+      "amd": 0,
+      "sync": 1,
+      "wave": 4,
+      "pms": 0
+    },
+    "operators": [
+      {
+        "level": 99,
+        "coarse": 1,
+        "rates": [
+          99,
+          69,
+          53,
+          78
+        ],
+        "levels": [
+          99,
+          70,
+          0,
+          0
+        ],
+        "velocity": 2,
+        "rate_scaling": 2,
+        "right_depth": 8
+      },
+      {
+        "level": 58,
+        "coarse": 3,
+        "fine": 50,
+        "rates": [
+          99,
+          76,
+          62,
+          84
+        ],
+        "levels": [
+          99,
+          60,
+          0,
+          0
+        ],
+        "velocity": 4,
+        "rate_scaling": 2,
+        "right_depth": 24
+      },
+      {
+        "level": 86,
+        "coarse": 2,
+        "rates": [
+          99,
+          72,
+          56,
+          80
+        ],
+        "levels": [
+          99,
+          64,
+          0,
+          0
+        ],
+        "velocity": 3,
+        "rate_scaling": 2,
+        "right_depth": 17
+      },
+      {
+        "level": 52,
+        "coarse": 7,
+        "rates": [
+          99,
+          79,
+          66,
+          85
+        ],
+        "levels": [
+          99,
+          46,
+          0,
+          0
+        ],
+        "velocity": 5,
+        "rate_scaling": 2,
+        "right_depth": 30
+      },
+      {
+        "level": 70,
+        "coarse": 3,
+        "rates": [
+          99,
+          76,
+          61,
+          84
+        ],
+        "levels": [
+          99,
+          49,
+          0,
+          0
+        ],
+        "velocity": 3,
+        "rate_scaling": 2,
+        "right_depth": 24
+      },
+      {
+        "level": 45,
+        "coarse": 11,
+        "rates": [
+          99,
+          83,
+          70,
+          88
+        ],
+        "levels": [
+          99,
+          35,
+          0,
+          0
+        ],
+        "velocity": 5,
+        "rate_scaling": 3,
+        "right_depth": 38
+      }
+    ]
+  },
+  {
+    "name": "WIRE CLAV",
+    "label": "Wire Clav",
+    "category": "Keys",
+    "description": "A dry, wiry keyboard pluck with an aggressive transient that softens as each note decays.",
+    "demo": "keys",
+    "algorithm": 5,
+    "feedback": 3,
+    "transpose": 24,
+    "lfo": {
+      "speed": 30,
+      "delay": 0,
+      "pmd": 0,
+      "amd": 0,
+      "sync": 1,
+      "wave": 4,
+      "pms": 0
+    },
+    "operators": [
+      {
+        "level": 98,
+        "coarse": 1,
+        "rates": [
+          99,
+          65,
+          51,
+          82
+        ],
+        "levels": [
+          99,
+          64,
+          0,
+          0
+        ],
+        "velocity": 2,
+        "rate_scaling": 2,
+        "right_depth": 10
+      },
+      {
+        "level": 76,
+        "coarse": 1,
+        "rates": [
+          99,
+          77,
+          54,
+          85
+        ],
+        "levels": [
+          99,
+          20,
+          0,
+          0
+        ],
+        "velocity": 6,
+        "rate_scaling": 2,
+        "right_depth": 20
+      },
+      {
+        "level": 88,
+        "coarse": 2,
+        "rates": [
+          99,
+          69,
+          56,
+          84
+        ],
+        "levels": [
+          99,
+          58,
+          0,
+          0
+        ],
+        "velocity": 3,
+        "rate_scaling": 2,
+        "right_depth": 18
+      },
+      {
+        "level": 62,
+        "coarse": 2,
+        "rates": [
+          99,
+          81,
+          64,
+          88
+        ],
+        "levels": [
+          99,
+          23,
+          0,
+          0
+        ],
+        "velocity": 5,
+        "rate_scaling": 2,
+        "right_depth": 24
+      },
+      {
+        "level": 84,
+        "coarse": 1,
+        "detune": 8,
+        "rates": [
+          99,
+          72,
+          61,
+          84
+        ],
+        "levels": [
+          99,
+          52,
+          0,
+          0
+        ],
+        "velocity": 3,
+        "rate_scaling": 2,
+        "right_depth": 22
+      },
+      {
+        "level": 67,
+        "coarse": 3,
+        "rates": [
+          99,
+          83,
+          68,
+          88
+        ],
+        "levels": [
+          99,
+          18,
+          0,
+          0
+        ],
+        "velocity": 6,
+        "rate_scaling": 2,
+        "right_depth": 30
+      }
+    ]
+  },
+  {
+    "name": "SOFT REED",
+    "label": "Soft Reed",
+    "category": "Lead",
+    "description": "A breathy sustained reed lead with a gentle onset, restrained upper harmonics, and delayed vibrato.",
+    "demo": "lead",
+    "algorithm": 5,
+    "feedback": 0,
+    "transpose": 24,
+    "lfo": {
+      "speed": 35,
+      "delay": 35,
+      "pmd": 3,
+      "amd": 0,
+      "sync": 1,
+      "wave": 4,
+      "pms": 2
+    },
+    "operators": [
+      {
+        "level": 99,
+        "coarse": 1,
+        "rates": [
+          68,
+          80,
+          72,
+          65
+        ],
+        "levels": [
+          99,
+          94,
+          92,
+          0
+        ],
+        "velocity": 2,
+        "rate_scaling": 1,
+        "right_depth": 10
+      },
+      {
+        "level": 50,
+        "coarse": 1,
+        "rates": [
+          58,
+          76,
+          66,
+          67
+        ],
+        "levels": [
+          99,
+          88,
+          83,
+          0
+        ],
+        "velocity": 4,
+        "rate_scaling": 1,
+        "right_depth": 18
+      },
+      {
+        "level": 71,
+        "coarse": 2,
+        "detune": 8,
+        "rates": [
+          64,
+          78,
+          70,
+          64
+        ],
+        "levels": [
+          99,
+          93,
+          89,
+          0
+        ],
+        "velocity": 2,
+        "rate_scaling": 1,
+        "right_depth": 19
+      },
+      {
+        "level": 46,
+        "coarse": 1,
+        "rates": [
+          55,
+          73,
+          65,
+          66
+        ],
+        "levels": [
+          99,
+          88,
+          80,
+          0
+        ],
+        "velocity": 4,
+        "rate_scaling": 1,
+        "right_depth": 25
+      },
+      {
+        "level": 57,
+        "coarse": 3,
+        "rates": [
+          61,
+          77,
+          68,
+          63
+        ],
+        "levels": [
+          99,
+          91,
+          85,
+          0
+        ],
+        "velocity": 3,
+        "rate_scaling": 1,
+        "right_depth": 26
+      },
+      {
+        "level": 38,
+        "coarse": 2,
+        "rates": [
+          52,
+          72,
+          63,
+          65
+        ],
+        "levels": [
+          99,
+          85,
+          77,
+          0
+        ],
+        "velocity": 4,
+        "rate_scaling": 1,
+        "right_depth": 31
+      }
+    ]
+  }
+]

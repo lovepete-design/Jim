@@ -1,0 +1,25 @@
+name: Build Hex MkI sound pack
+on:
+  push:
+    branches: [codex/hex-sounds]
+    paths: ['presets/**', 'scripts/make-hex-sounds.py', 'tests/RenderHexSounds.cpp', '.github/workflows/hex-sounds.yml']
+permissions:
+  contents: write
+jobs:
+  sounds:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Encode original DX7 voice files
+        run: python3 scripts/make-hex-sounds.py
+      - name: Render and validate every sound
+        run: |
+          g++ -std=c++17 -O2 -fwrapv -pthread -Ithird_party/msfa tests/RenderHexSounds.cpp plugins/hex/HexEngine.cpp third_party/msfa/*.cc third_party/msfa/EngineMkI.cpp -o /tmp/render-hex-sounds
+          /tmp/render-hex-sounds dist/Hex-MkI-Sounds-Vol1
+      - name: Package and publish sounds
+        run: |
+          python3 scripts/make-hex-sounds.py --zip dist/Hex-MkI-Sounds-Vol1.zip
+          gh release upload v0.1.0-macos dist/Hex-MkI-Sounds-Vol1.zip --repo lovepete-design/Jim --clobber

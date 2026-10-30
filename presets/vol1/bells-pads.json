@@ -1,0 +1,848 @@
+[
+  {
+    "name": "PRISM BELL",
+    "label": "Prism Bell",
+    "category": "Bell",
+    "description": "A clear struck fundamental with glassy, inharmonic overtones that fade at different speeds.",
+    "demo": "bell",
+    "algorithm": 5,
+    "feedback": 1,
+    "transpose": 24,
+    "lfo": {
+      "speed": 24,
+      "delay": 40,
+      "pmd": 0,
+      "amd": 0,
+      "sync": 1,
+      "wave": 4,
+      "pms": 0
+    },
+    "operators": [
+      {
+        "level": 99,
+        "coarse": 1,
+        "rates": [
+          99,
+          53,
+          34,
+          46
+        ],
+        "levels": [
+          99,
+          68,
+          0,
+          0
+        ],
+        "velocity": 2,
+        "right_depth": 16
+      },
+      {
+        "level": 74,
+        "coarse": 2,
+        "fine": 75,
+        "rates": [
+          99,
+          59,
+          39,
+          52
+        ],
+        "levels": [
+          99,
+          56,
+          0,
+          0
+        ],
+        "velocity": 5,
+        "right_depth": 25
+      },
+      {
+        "level": 85,
+        "coarse": 2,
+        "detune": 6,
+        "rates": [
+          99,
+          58,
+          37,
+          48
+        ],
+        "levels": [
+          99,
+          62,
+          0,
+          0
+        ],
+        "velocity": 3,
+        "right_depth": 24
+      },
+      {
+        "level": 67,
+        "coarse": 2,
+        "fine": 41,
+        "rates": [
+          99,
+          65,
+          43,
+          54
+        ],
+        "levels": [
+          99,
+          48,
+          0,
+          0
+        ],
+        "velocity": 5,
+        "right_depth": 30
+      },
+      {
+        "level": 70,
+        "coarse": 4,
+        "detune": 8,
+        "rates": [
+          99,
+          66,
+          46,
+          53
+        ],
+        "levels": [
+          99,
+          50,
+          0,
+          0
+        ],
+        "velocity": 3,
+        "right_depth": 32
+      },
+      {
+        "level": 61,
+        "coarse": 7,
+        "rates": [
+          99,
+          72,
+          48,
+          56
+        ],
+        "levels": [
+          99,
+          36,
+          0,
+          0
+        ],
+        "velocity": 5,
+        "right_depth": 38
+      }
+    ]
+  },
+  {
+    "name": "VIBRA SOFT",
+    "label": "Vibra Soft",
+    "category": "Bell",
+    "description": "Rounded mallet tones with a restrained metallic attack and gentle delayed tremolo.",
+    "demo": "bell",
+    "algorithm": 5,
+    "feedback": 0,
+    "transpose": 24,
+    "lfo": {
+      "speed": 36,
+      "delay": 24,
+      "pmd": 0,
+      "amd": 18,
+      "sync": 1,
+      "wave": 4,
+      "pms": 0
+    },
+    "operators": [
+      {
+        "level": 99,
+        "coarse": 1,
+        "rates": [
+          99,
+          48,
+          34,
+          48
+        ],
+        "levels": [
+          99,
+          78,
+          0,
+          0
+        ],
+        "velocity": 2,
+        "amp_mod": 1,
+        "right_depth": 12
+      },
+      {
+        "level": 60,
+        "coarse": 4,
+        "rates": [
+          99,
+          73,
+          45,
+          52
+        ],
+        "levels": [
+          99,
+          35,
+          0,
+          0
+        ],
+        "velocity": 5,
+        "right_depth": 22
+      },
+      {
+        "level": 77,
+        "coarse": 2,
+        "detune": 8,
+        "rates": [
+          99,
+          54,
+          38,
+          50
+        ],
+        "levels": [
+          99,
+          65,
+          0,
+          0
+        ],
+        "velocity": 3,
+        "amp_mod": 1,
+        "right_depth": 22
+      },
+      {
+        "level": 52,
+        "coarse": 2,
+        "rates": [
+          99,
+          78,
+          48,
+          55
+        ],
+        "levels": [
+          99,
+          25,
+          0,
+          0
+        ],
+        "velocity": 5,
+        "right_depth": 30
+      },
+      {
+        "level": 63,
+        "coarse": 3,
+        "detune": 6,
+        "rates": [
+          99,
+          61,
+          42,
+          54
+        ],
+        "levels": [
+          99,
+          52,
+          0,
+          0
+        ],
+        "velocity": 3,
+        "amp_mod": 1,
+        "right_depth": 30
+      },
+      {
+        "level": 45,
+        "coarse": 5,
+        "rates": [
+          99,
+          82,
+          52,
+          58
+        ],
+        "levels": [
+          99,
+          18,
+          0,
+          0
+        ],
+        "velocity": 5,
+        "right_depth": 36
+      }
+    ]
+  },
+  {
+    "name": "STEEL DROP",
+    "label": "Steel Drop",
+    "category": "Bell",
+    "description": "A damped steel-like strike with a quick pitch droop and a hollow metallic body.",
+    "demo": "bell",
+    "algorithm": 5,
+    "feedback": 2,
+    "transpose": 24,
+    "pitch_eg": {
+      "rates": [
+        91,
+        65,
+        99,
+        99
+      ],
+      "levels": [
+        57,
+        50,
+        50,
+        50
+      ]
+    },
+    "lfo": {
+      "speed": 20,
+      "delay": 0,
+      "pmd": 0,
+      "amd": 0,
+      "sync": 1,
+      "wave": 4,
+      "pms": 0
+    },
+    "operators": [
+      {
+        "level": 99,
+        "coarse": 1,
+        "rates": [
+          99,
+          65,
+          47,
+          68
+        ],
+        "levels": [
+          99,
+          62,
+          0,
+          0
+        ],
+        "velocity": 2,
+        "right_depth": 18
+      },
+      {
+        "level": 79,
+        "coarse": 1,
+        "fine": 41,
+        "rates": [
+          99,
+          75,
+          54,
+          72
+        ],
+        "levels": [
+          99,
+          40,
+          0,
+          0
+        ],
+        "velocity": 5,
+        "right_depth": 25
+      },
+      {
+        "level": 81,
+        "coarse": 2,
+        "detune": 6,
+        "rates": [
+          99,
+          69,
+          49,
+          69
+        ],
+        "levels": [
+          99,
+          52,
+          0,
+          0
+        ],
+        "velocity": 3,
+        "right_depth": 25
+      },
+      {
+        "level": 61,
+        "coarse": 5,
+        "rates": [
+          99,
+          79,
+          57,
+          74
+        ],
+        "levels": [
+          99,
+          30,
+          0,
+          0
+        ],
+        "velocity": 5,
+        "right_depth": 34
+      },
+      {
+        "level": 74,
+        "coarse": 1,
+        "detune": 8,
+        "rates": [
+          99,
+          62,
+          45,
+          66
+        ],
+        "levels": [
+          99,
+          59,
+          0,
+          0
+        ],
+        "velocity": 3,
+        "right_depth": 20
+      },
+      {
+        "level": 67,
+        "coarse": 3,
+        "fine": 50,
+        "rates": [
+          99,
+          74,
+          54,
+          72
+        ],
+        "levels": [
+          99,
+          34,
+          0,
+          0
+        ],
+        "velocity": 5,
+        "right_depth": 29
+      }
+    ]
+  },
+  {
+    "name": "AIR CHOIR",
+    "label": "Air Choir",
+    "category": "Pad",
+    "description": "A soft vowel-like pad with slow spectral breathing and a stable pitched center.",
+    "demo": "pad",
+    "algorithm": 19,
+    "feedback": 1,
+    "transpose": 24,
+    "lfo": {
+      "speed": 12,
+      "delay": 36,
+      "pmd": 2,
+      "amd": 12,
+      "sync": 1,
+      "wave": 0,
+      "pms": 2
+    },
+    "operators": [
+      {
+        "level": 84,
+        "coarse": 1,
+        "rates": [
+          46,
+          36,
+          28,
+          43
+        ],
+        "levels": [
+          99,
+          93,
+          86,
+          0
+        ],
+        "velocity": 1,
+        "amp_mod": 1,
+        "right_depth": 10
+      },
+      {
+        "level": 63,
+        "coarse": 3,
+        "rates": [
+          40,
+          33,
+          26,
+          43
+        ],
+        "levels": [
+          99,
+          82,
+          72,
+          0
+        ],
+        "velocity": 3,
+        "amp_mod": 1,
+        "right_depth": 20
+      },
+      {
+        "level": 44,
+        "coarse": 7,
+        "rates": [
+          37,
+          31,
+          24,
+          45
+        ],
+        "levels": [
+          99,
+          72,
+          64,
+          0
+        ],
+        "velocity": 3,
+        "amp_mod": 1,
+        "right_depth": 30
+      },
+      {
+        "level": 76,
+        "coarse": 2,
+        "detune": 5,
+        "rates": [
+          43,
+          35,
+          27,
+          42
+        ],
+        "levels": [
+          99,
+          92,
+          85,
+          0
+        ],
+        "velocity": 1,
+        "amp_mod": 1,
+        "right_depth": 18
+      },
+      {
+        "level": 80,
+        "coarse": 1,
+        "detune": 9,
+        "rates": [
+          41,
+          34,
+          26,
+          41
+        ],
+        "levels": [
+          99,
+          94,
+          88,
+          0
+        ],
+        "velocity": 1,
+        "amp_mod": 1,
+        "right_depth": 12
+      },
+      {
+        "level": 56,
+        "coarse": 2,
+        "detune": 8,
+        "rates": [
+          38,
+          31,
+          25,
+          43
+        ],
+        "levels": [
+          99,
+          85,
+          73,
+          0
+        ],
+        "velocity": 2,
+        "amp_mod": 1,
+        "right_depth": 25
+      }
+    ]
+  },
+  {
+    "name": "MOON PAD",
+    "label": "Moon Pad",
+    "category": "Pad",
+    "description": "A mellow additive pad of gently detuned fundamentals and upper harmonics with a soft onset.",
+    "demo": "pad",
+    "algorithm": 32,
+    "feedback": 0,
+    "transpose": 24,
+    "lfo": {
+      "speed": 16,
+      "delay": 42,
+      "pmd": 4,
+      "amd": 5,
+      "sync": 1,
+      "wave": 4,
+      "pms": 2
+    },
+    "operators": [
+      {
+        "level": 86,
+        "coarse": 1,
+        "detune": 4,
+        "rates": [
+          48,
+          37,
+          28,
+          42
+        ],
+        "levels": [
+          99,
+          94,
+          91,
+          0
+        ],
+        "velocity": 1,
+        "amp_mod": 1,
+        "right_depth": 10
+      },
+      {
+        "level": 84,
+        "coarse": 1,
+        "detune": 10,
+        "rates": [
+          45,
+          36,
+          27,
+          41
+        ],
+        "levels": [
+          99,
+          95,
+          92,
+          0
+        ],
+        "velocity": 1,
+        "amp_mod": 1,
+        "right_depth": 10
+      },
+      {
+        "level": 74,
+        "coarse": 2,
+        "detune": 6,
+        "rates": [
+          43,
+          35,
+          26,
+          40
+        ],
+        "levels": [
+          99,
+          92,
+          88,
+          0
+        ],
+        "velocity": 2,
+        "amp_mod": 1,
+        "right_depth": 17
+      },
+      {
+        "level": 71,
+        "coarse": 2,
+        "detune": 9,
+        "rates": [
+          40,
+          34,
+          25,
+          39
+        ],
+        "levels": [
+          99,
+          92,
+          87,
+          0
+        ],
+        "velocity": 2,
+        "amp_mod": 1,
+        "right_depth": 17
+      },
+      {
+        "level": 62,
+        "coarse": 3,
+        "detune": 5,
+        "rates": [
+          38,
+          32,
+          24,
+          40
+        ],
+        "levels": [
+          99,
+          89,
+          80,
+          0
+        ],
+        "velocity": 2,
+        "amp_mod": 1,
+        "right_depth": 24
+      },
+      {
+        "level": 54,
+        "coarse": 4,
+        "detune": 8,
+        "rates": [
+          35,
+          31,
+          23,
+          41
+        ],
+        "levels": [
+          99,
+          86,
+          74,
+          0
+        ],
+        "velocity": 2,
+        "amp_mod": 1,
+        "right_depth": 30
+      }
+    ]
+  },
+  {
+    "name": "SPACE DUST",
+    "label": "Space Dust",
+    "category": "FX",
+    "description": "A pitched cloud whose metallic attack drifts into darker, slowly changing inharmonic textures.",
+    "demo": "fx",
+    "algorithm": 16,
+    "feedback": 3,
+    "transpose": 24,
+    "pitch_eg": {
+      "rates": [
+        73,
+        38,
+        28,
+        60
+      ],
+      "levels": [
+        54,
+        50,
+        49,
+        50
+      ]
+    },
+    "lfo": {
+      "speed": 19,
+      "delay": 14,
+      "pmd": 0,
+      "amd": 11,
+      "sync": 1,
+      "wave": 5,
+      "pms": 0
+    },
+    "operators": [
+      {
+        "level": 99,
+        "coarse": 1,
+        "rates": [
+          75,
+          39,
+          29,
+          45
+        ],
+        "levels": [
+          99,
+          82,
+          70,
+          0
+        ],
+        "velocity": 2,
+        "right_depth": 16
+      },
+      {
+        "level": 45,
+        "coarse": 2,
+        "fine": 30,
+        "mode": 1,
+        "rates": [
+          92,
+          48,
+          24,
+          46
+        ],
+        "levels": [
+          99,
+          44,
+          26,
+          0
+        ],
+        "velocity": 4,
+        "amp_mod": 2
+      },
+      {
+        "level": 66,
+        "coarse": 1,
+        "fine": 12,
+        "detune": 9,
+        "rates": [
+          51,
+          32,
+          26,
+          43
+        ],
+        "levels": [
+          99,
+          86,
+          61,
+          0
+        ],
+        "velocity": 3,
+        "amp_mod": 1,
+        "right_depth": 22
+      },
+      {
+        "level": 47,
+        "coarse": 8,
+        "rates": [
+          95,
+          57,
+          34,
+          49
+        ],
+        "levels": [
+          99,
+          38,
+          10,
+          0
+        ],
+        "velocity": 5,
+        "right_depth": 35
+      },
+      {
+        "level": 60,
+        "coarse": 3,
+        "fine": 41,
+        "detune": 5,
+        "rates": [
+          63,
+          36,
+          27,
+          44
+        ],
+        "levels": [
+          99,
+          65,
+          45,
+          0
+        ],
+        "velocity": 3,
+        "amp_mod": 1,
+        "right_depth": 26
+      },
+      {
+        "level": 49,
+        "coarse": 2,
+        "fine": 78,
+        "mode": 1,
+        "rates": [
+          86,
+          43,
+          28,
+          48
+        ],
+        "levels": [
+          99,
+          54,
+          32,
+          0
+        ],
+        "velocity": 4,
+        "amp_mod": 2
+      }
+    ]
+  }
+]

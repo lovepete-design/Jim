@@ -1,0 +1,629 @@
+[
+  {
+    "name": "SOLID SUB",
+    "label": "Solid Sub",
+    "category": "Bass",
+    "description": "A clean sustained fundamental with a brief second-harmonic knock for definition on small speakers.",
+    "demo": "bass",
+    "algorithm": 32,
+    "feedback": 0,
+    "transpose": 24,
+    "lfo": {
+      "speed": 0,
+      "delay": 0,
+      "pmd": 0,
+      "amd": 0,
+      "sync": 1,
+      "wave": 4,
+      "pms": 0
+    },
+    "operators": [
+      {
+        "level": 99,
+        "coarse": 1,
+        "rates": [
+          99,
+          99,
+          99,
+          80
+        ],
+        "levels": [
+          99,
+          99,
+          99,
+          0
+        ],
+        "velocity": 1
+      },
+      {
+        "level": 64,
+        "coarse": 2,
+        "rates": [
+          99,
+          72,
+          55,
+          88
+        ],
+        "levels": [
+          99,
+          45,
+          0,
+          0
+        ],
+        "velocity": 4
+      },
+      {
+        "level": 0,
+        "coarse": 1,
+        "rates": [
+          99,
+          99,
+          99,
+          80
+        ],
+        "levels": [
+          99,
+          99,
+          99,
+          0
+        ]
+      },
+      {
+        "level": 0,
+        "coarse": 1,
+        "rates": [
+          99,
+          99,
+          99,
+          80
+        ],
+        "levels": [
+          99,
+          99,
+          99,
+          0
+        ]
+      },
+      {
+        "level": 0,
+        "coarse": 1,
+        "rates": [
+          99,
+          99,
+          99,
+          80
+        ],
+        "levels": [
+          99,
+          99,
+          99,
+          0
+        ]
+      },
+      {
+        "level": 0,
+        "coarse": 1,
+        "rates": [
+          99,
+          99,
+          99,
+          80
+        ],
+        "levels": [
+          99,
+          99,
+          99,
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "name": "RUBBERBASS",
+    "label": "Rubber Bass",
+    "category": "Bass",
+    "description": "A springy FM bass with a rounded sustain and a restrained lower-octave body.",
+    "demo": "bass",
+    "algorithm": 5,
+    "feedback": 2,
+    "transpose": 24,
+    "lfo": {
+      "speed": 0,
+      "delay": 0,
+      "pmd": 0,
+      "amd": 0,
+      "sync": 1,
+      "wave": 4,
+      "pms": 0
+    },
+    "operators": [
+      {
+        "level": 99,
+        "coarse": 1,
+        "rates": [
+          99,
+          65,
+          45,
+          80
+        ],
+        "levels": [
+          99,
+          90,
+          70,
+          0
+        ],
+        "velocity": 2
+      },
+      {
+        "level": 75,
+        "coarse": 1,
+        "rates": [
+          99,
+          65,
+          45,
+          84
+        ],
+        "levels": [
+          99,
+          75,
+          15,
+          0
+        ],
+        "velocity": 4,
+        "right_depth": 20
+      },
+      {
+        "level": 84,
+        "coarse": 1,
+        "rates": [
+          99,
+          64,
+          45,
+          80
+        ],
+        "levels": [
+          99,
+          84,
+          55,
+          0
+        ],
+        "velocity": 2
+      },
+      {
+        "level": 65,
+        "coarse": 2,
+        "rates": [
+          99,
+          76,
+          48,
+          84
+        ],
+        "levels": [
+          99,
+          66,
+          12,
+          0
+        ],
+        "velocity": 5,
+        "right_depth": 24
+      },
+      {
+        "level": 81,
+        "coarse": 0,
+        "rates": [
+          99,
+          99,
+          99,
+          80
+        ],
+        "levels": [
+          99,
+          99,
+          90,
+          0
+        ],
+        "velocity": 1
+      },
+      {
+        "level": 53,
+        "coarse": 1,
+        "rates": [
+          99,
+          68,
+          45,
+          84
+        ],
+        "levels": [
+          99,
+          70,
+          30,
+          0
+        ],
+        "velocity": 3
+      }
+    ]
+  },
+  {
+    "name": "PICK BASS",
+    "label": "Pick Bass",
+    "category": "Bass",
+    "description": "A tight picked attack over a woody body, with a short metallic edge that fades after the transient.",
+    "demo": "bass",
+    "algorithm": 1,
+    "feedback": 2,
+    "transpose": 24,
+    "lfo": {
+      "speed": 0,
+      "delay": 0,
+      "pmd": 0,
+      "amd": 0,
+      "sync": 1,
+      "wave": 4,
+      "pms": 0
+    },
+    "operators": [
+      {
+        "level": 99,
+        "coarse": 1,
+        "rates": [
+          99,
+          62,
+          38,
+          82
+        ],
+        "levels": [
+          99,
+          84,
+          50,
+          0
+        ],
+        "velocity": 2,
+        "rate_scaling": 1
+      },
+      {
+        "level": 71,
+        "coarse": 2,
+        "rates": [
+          99,
+          78,
+          55,
+          86
+        ],
+        "levels": [
+          99,
+          72,
+          8,
+          0
+        ],
+        "velocity": 5,
+        "right_depth": 28
+      },
+      {
+        "level": 85,
+        "coarse": 1,
+        "rates": [
+          99,
+          65,
+          40,
+          82
+        ],
+        "levels": [
+          99,
+          78,
+          38,
+          0
+        ],
+        "velocity": 3,
+        "rate_scaling": 1
+      },
+      {
+        "level": 63,
+        "coarse": 3,
+        "rates": [
+          99,
+          79,
+          56,
+          86
+        ],
+        "levels": [
+          99,
+          62,
+          0,
+          0
+        ],
+        "velocity": 5,
+        "right_depth": 35
+      },
+      {
+        "level": 52,
+        "coarse": 7,
+        "rates": [
+          99,
+          87,
+          65,
+          90
+        ],
+        "levels": [
+          99,
+          35,
+          0,
+          0
+        ],
+        "velocity": 6,
+        "right_depth": 35
+      },
+      {
+        "level": 48,
+        "coarse": 1,
+        "rates": [
+          99,
+          85,
+          65,
+          90
+        ],
+        "levels": [
+          99,
+          30,
+          0,
+          0
+        ],
+        "velocity": 5
+      }
+    ]
+  },
+  {
+    "name": "COPPERLEAD",
+    "label": "Copper Lead",
+    "category": "Lead",
+    "description": "A singing bright lead with a breathy onset, subtle detuning, and delayed vibrato.",
+    "demo": "lead",
+    "algorithm": 5,
+    "feedback": 3,
+    "transpose": 24,
+    "lfo": {
+      "speed": 35,
+      "delay": 35,
+      "pmd": 8,
+      "amd": 0,
+      "sync": 1,
+      "wave": 4,
+      "pms": 3
+    },
+    "operators": [
+      {
+        "level": 99,
+        "coarse": 1,
+        "rates": [
+          83,
+          58,
+          48,
+          70
+        ],
+        "levels": [
+          99,
+          91,
+          88,
+          0
+        ],
+        "velocity": 2
+      },
+      {
+        "level": 76,
+        "coarse": 1,
+        "rates": [
+          68,
+          60,
+          48,
+          72
+        ],
+        "levels": [
+          99,
+          88,
+          78,
+          0
+        ],
+        "velocity": 4,
+        "right_depth": 20
+      },
+      {
+        "level": 91,
+        "coarse": 1,
+        "detune": 8,
+        "rates": [
+          80,
+          56,
+          46,
+          69
+        ],
+        "levels": [
+          99,
+          91,
+          86,
+          0
+        ],
+        "velocity": 2
+      },
+      {
+        "level": 67,
+        "coarse": 2,
+        "rates": [
+          66,
+          63,
+          48,
+          72
+        ],
+        "levels": [
+          99,
+          85,
+          71,
+          0
+        ],
+        "velocity": 4,
+        "right_depth": 24
+      },
+      {
+        "level": 79,
+        "coarse": 2,
+        "detune": 6,
+        "rates": [
+          78,
+          55,
+          46,
+          68
+        ],
+        "levels": [
+          99,
+          90,
+          85,
+          0
+        ],
+        "velocity": 2
+      },
+      {
+        "level": 67,
+        "coarse": 1,
+        "rates": [
+          64,
+          62,
+          48,
+          72
+        ],
+        "levels": [
+          99,
+          86,
+          72,
+          0
+        ],
+        "velocity": 4,
+        "right_depth": 25
+      }
+    ]
+  },
+  {
+    "name": "SOFT BRASS",
+    "label": "Soft Brass",
+    "category": "Brass",
+    "description": "A rounded brass-like swell whose upper harmonics bloom slightly behind the fundamental.",
+    "demo": "lead",
+    "algorithm": 19,
+    "feedback": 1,
+    "transpose": 24,
+    "lfo": {
+      "speed": 30,
+      "delay": 40,
+      "pmd": 5,
+      "amd": 0,
+      "sync": 1,
+      "wave": 4,
+      "pms": 2
+    },
+    "operators": [
+      {
+        "level": 97,
+        "coarse": 1,
+        "rates": [
+          65,
+          55,
+          40,
+          65
+        ],
+        "levels": [
+          99,
+          90,
+          88,
+          0
+        ],
+        "velocity": 2
+      },
+      {
+        "level": 65,
+        "coarse": 1,
+        "rates": [
+          58,
+          58,
+          42,
+          67
+        ],
+        "levels": [
+          99,
+          80,
+          72,
+          0
+        ],
+        "velocity": 4,
+        "right_depth": 20
+      },
+      {
+        "level": 35,
+        "coarse": 1,
+        "rates": [
+          62,
+          65,
+          48,
+          68
+        ],
+        "levels": [
+          99,
+          75,
+          60,
+          0
+        ],
+        "velocity": 4
+      },
+      {
+        "level": 93,
+        "coarse": 1,
+        "detune": 6,
+        "rates": [
+          63,
+          55,
+          40,
+          65
+        ],
+        "levels": [
+          99,
+          91,
+          88,
+          0
+        ],
+        "velocity": 2
+      },
+      {
+        "level": 82,
+        "coarse": 2,
+        "detune": 8,
+        "rates": [
+          62,
+          55,
+          40,
+          65
+        ],
+        "levels": [
+          99,
+          90,
+          86,
+          0
+        ],
+        "velocity": 2
+      },
+      {
+        "level": 66,
+        "coarse": 1,
+        "rates": [
+          58,
+          60,
+          43,
+          68
+        ],
+        "levels": [
+          99,
+          84,
+          73,
+          0
+        ],
+        "velocity": 4,
+        "right_depth": 24
+      }
+    ]
+  }
+]
