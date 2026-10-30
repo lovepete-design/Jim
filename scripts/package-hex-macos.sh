@@ -15,7 +15,7 @@ package_stage="$(mktemp -d "$project_root/dist/.hex-stage.XXXXXX")"
 trap 'rm -rf "$package_stage"' EXIT
 ditto "$source_package/Hex MkI.vst3" "$package_stage/Hex MkI.vst3"
 codesign --verify --deep --strict "$package_stage/Hex MkI.vst3"
-lipo -verify_arch arm64 x86_64 "$package_stage/Hex MkI.vst3/Contents/MacOS/Hex MkI"
+lipo "$package_stage/Hex MkI.vst3/Contents/MacOS/Hex MkI" -verify_arch arm64 x86_64
 cp "$project_root/scripts/install-hex-macos.sh" "$package_stage/install-hex-macos.sh"
 cp "$project_root/docs/HEX-LIBRARY.md" "$package_stage/START-HERE.md"
 cp "$source_package/triad-audio-source.tar.gz" "$package_stage/triad-audio-source.tar.gz"
