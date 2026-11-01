@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(TriadAudio VERSION 0.2.0 LANGUAGES C CXX)
+project(TriadAudio VERSION 0.2.1 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -75,7 +75,7 @@ if(TRIAD_BUILD_PLUGINS)
     function(triad_plugin target title code kind synth category)
         string(REPLACE "|" ";" categories "${category}")
         juce_add_plugin(${target}
-            COMPANY_NAME "Triad Audio" BUNDLE_ID "audio.triad.${target}"
+            COMPANY_NAME "Triad Audio" BUNDLE_ID "audio.triad.${code}"
             PLUGIN_MANUFACTURER_CODE Tria PLUGIN_CODE ${code}
             FORMATS VST3 PRODUCT_NAME "${title}"
             IS_SYNTH ${synth} NEEDS_MIDI_INPUT ${synth} NEEDS_MIDI_OUTPUT FALSE
@@ -95,7 +95,7 @@ if(TRIAD_BUILD_PLUGINS)
             set_property(TARGET ${target}_VST3 APPEND PROPERTY LINK_DEPENDS "${exports_file}")
         endif()
     endfunction()
-    triad_plugin(HexMkI "Hex MkI" HxM1 0 TRUE "Instrument|Synth")
+    triad_plugin(HexMkI "Hex Library" HxL2 0 TRUE "Instrument|Synth")
     target_sources(HexMkI PRIVATE shared/HexLibrary.cpp shared/HexLibrary.h shared/HexBrowser.cpp shared/HexBrowser.h)
     triad_plugin(Stress "Stress" Strs 1 FALSE "Fx|Dynamics")
     triad_plugin(Lattice "Lattice" Latt 2 TRUE "Instrument|Synth")
@@ -107,7 +107,7 @@ if(TRIAD_BUILD_PLUGINS)
     target_link_libraries(triad_host PRIVATE triad_juce)
     add_dependencies(triad_host plugins)
     add_test(NAME vst3_host COMMAND triad_host
-        "${CMAKE_CURRENT_BINARY_DIR}/HexMkI_artefacts/$<CONFIG>/VST3/Hex MkI.vst3"
+        "${CMAKE_CURRENT_BINARY_DIR}/HexMkI_artefacts/$<CONFIG>/VST3/Hex Library.vst3"
         "${CMAKE_CURRENT_BINARY_DIR}/Stress_artefacts/$<CONFIG>/VST3/Stress.vst3"
         "${CMAKE_CURRENT_BINARY_DIR}/Lattice_artefacts/$<CONFIG>/VST3/Lattice.vst3")
     set_tests_properties(vst3_host PROPERTIES TIMEOUT 120)

@@ -28,7 +28,7 @@ cmake --build "$build_dir" --config Release \
 # The manifest helper writes resources after the initial link-time signature.
 # Refresh the final bundles before loading them in the validation host.
 targets=(HexMkI Stress Lattice)
-products=('Hex MkI' Stress Lattice)
+products=('Hex Library' Stress Lattice)
 for index in 0 1 2; do
     built_bundle="$build_dir/${targets[$index]}_artefacts/Release/VST3/${products[$index]}.vst3"
     codesign --force --deep --sign - "$built_bundle"
@@ -41,7 +41,7 @@ package_stage="$(mktemp -d "$project_root/dist/.macos-stage.XXXXXX")"
 trap 'rm -rf "$package_stage"' EXIT
 
 targets=(HexMkI Stress Lattice)
-products=('Hex MkI' Stress Lattice)
+products=('Hex Library' Stress Lattice)
 for index in 0 1 2; do
     bundle="${products[$index]}.vst3"
     source_bundle="$build_dir/${targets[$index]}_artefacts/Release/VST3/$bundle"

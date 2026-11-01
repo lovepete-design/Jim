@@ -7,15 +7,15 @@ if [[ "$(uname -s)" != Darwin ]]; then
     echo 'This packaging script requires macOS.' >&2
     exit 1
 fi
-if [[ ! -f "$source_package/triad-audio-source.tar.gz" || ! -d "$source_package/Hex MkI.vst3" ]]; then
+if [[ ! -f "$source_package/triad-audio-source.tar.gz" || ! -d "$source_package/Hex Library.vst3" ]]; then
     echo 'Run scripts/build-macos.sh successfully before packaging the Hex update.' >&2
     exit 1
 fi
 package_stage="$(mktemp -d "$project_root/dist/.hex-stage.XXXXXX")"
 trap 'rm -rf "$package_stage"' EXIT
-ditto "$source_package/Hex MkI.vst3" "$package_stage/Hex MkI.vst3"
-codesign --verify --deep --strict "$package_stage/Hex MkI.vst3"
-lipo "$package_stage/Hex MkI.vst3/Contents/MacOS/Hex MkI" -verify_arch arm64 x86_64
+ditto "$source_package/Hex Library.vst3" "$package_stage/Hex Library.vst3"
+codesign --verify --deep --strict "$package_stage/Hex Library.vst3"
+lipo "$package_stage/Hex Library.vst3/Contents/MacOS/Hex Library" -verify_arch arm64 x86_64
 cp "$project_root/scripts/install-hex-macos.sh" "$package_stage/install-hex-macos.sh"
 cp "$project_root/docs/HEX-LIBRARY.md" "$package_stage/START-HERE.md"
 cp "$source_package/triad-audio-source.tar.gz" "$package_stage/triad-audio-source.tar.gz"
@@ -28,6 +28,6 @@ if [[ -e "$package_dir" ]]; then
 fi
 mv "$package_stage" "$package_dir"
 trap - EXIT
-ditto -c -k --keepParent "$package_dir" "$project_root/dist/Hex-MkI-macOS.zip"
-(cd "$project_root/dist" && shasum -a 256 Hex-MkI-macOS.zip > Hex-MkI-macOS.zip.sha256)
-echo "Built Hex update: $project_root/dist/Hex-MkI-macOS.zip"
+ditto -c -k --keepParent "$package_dir" "$project_root/dist/Hex-Library-macOS.zip"
+(cd "$project_root/dist" && shasum -a 256 Hex-Library-macOS.zip > Hex-Library-macOS.zip.sha256)
+echo "Built Hex update: $project_root/dist/Hex-Library-macOS.zip"

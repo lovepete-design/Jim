@@ -72,7 +72,7 @@ TriadProcessor::~TriadProcessor() { keyboardState.removeListener(this); }
 juce::String TriadProcessor::title() const
 {
 #if TRIAD_KIND == 0
-    return "Hex MkI";
+    return "Hex Library";
 #elif TRIAD_KIND == 1
     return "Stress";
 #else
@@ -322,7 +322,7 @@ juce::Result TriadProcessor::loadSysexFile(const juce::File& file)
     return juce::Result::ok();
 #else
     juce::ignoreUnused(file);
-    return juce::Result::fail("SysEx import belongs to Hex MkI.");
+    return juce::Result::fail("SysEx import belongs to Hex Library.");
 #endif
 }
 void TriadProcessor::getStateInformation(juce::MemoryBlock& destination)

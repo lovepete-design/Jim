@@ -1,16 +1,16 @@
-# Hex MkI sound library
+# Hex Library sound library
 
-Hex MkI 0.2.0 keeps your DX7 sounds inside the plugin. Import your main sound folder once, including all its subfolders. Browse and switch voices directly in Hex after that.
+Hex Library 0.2.1 keeps your DX7 sounds inside the plugin. Import your main sound folder once, including all its subfolders. Browse and switch voices directly in Hex after that.
 
 ## Install this update on macOS
 
 1. Quit Ableton Live.
-2. Unzip **Hex-MkI-macOS.zip** and open the extracted **hex-macos** folder.
+2. Unzip **Hex-Library-macOS.zip** and open the extracted **hex-macos** folder.
 3. Open **Terminal** (press Command-Space, type Terminal, then Return).
 4. Type `bash ` with a space after it. Drag **install-hex-macos.sh** from the extracted folder into Terminal, then press Return.
-5. Reopen Ableton and load **Hex MkI** on a MIDI track.
+5. Reopen Ableton and load **Hex Library** on a MIDI track.
 
-The installer updates Hex MkI in `~/Library/Audio/Plug-Ins/VST3/` and saves the previous version under `.triad-backups` there. It does not need a password. Existing Stress and Lattice installations are untouched. The plugin has a local ad hoc signature; the installer checks that signature and clears the download quarantine on this plugin bundle only.
+The installer updates Hex Library in `~/Library/Audio/Plug-Ins/VST3/` and saves the previous version under `.triad-backups` there. It does not need a password. Existing Stress and Lattice installations are untouched. The plugin has a local ad hoc signature; the installer checks that signature and clears the download quarantine on this plugin bundle only.
 
 If Live keeps showing the old interface, open **Settings > Plug-Ins**, enable **Use VST3 Plug-In System Folders**, then hold **Option** while clicking **Rescan**.
 
@@ -34,3 +34,5 @@ Back up that folder to keep your collection or move it to another Mac. Each Able
 ## Source and licensing
 
 The matching build source is included as **triad-audio-source.tar.gz**, together with license notices. Imported third-party sound collections keep their own licenses. This update does not include Yamaha factory banks.
+
+Hex Library installs alongside Hex MkI with a separate plugin identity. Existing Sets continue using Hex MkI. Both versions share the imported sound library.

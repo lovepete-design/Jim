@@ -1,4 +1,4 @@
-name: Hex MkI macOS Library Update
+name: Hex Library macOS Library Update
 on:
   workflow_dispatch:
   push:
@@ -29,7 +29,7 @@ jobs:
           restore-keys: triad-macos15-v1-
       - name: Build universal plugins and run DSP, host, library, and state tests
         run: bash scripts/build-macos.sh
-      - name: Package Hex MkI update
+      - name: Package Hex Library update
         run: bash scripts/package-hex-macos.sh
       - name: Diagnose failed Mac host validation
         if: failure()
@@ -38,7 +38,7 @@ jobs:
           if [[ -x build-macos/triad_host_artefacts/Release/triad_host ]]; then
             lldb --batch -o run -k 'thread backtrace all' -- \
               build-macos/triad_host_artefacts/Release/triad_host \
-              "$PWD/build-macos/HexMkI_artefacts/Release/VST3/Hex MkI.vst3" \
+              "$PWD/build-macos/HexMkI_artefacts/Release/VST3/Hex Library.vst3" \
               "$PWD/build-macos/Stress_artefacts/Release/VST3/Stress.vst3" \
               "$PWD/build-macos/Lattice_artefacts/Release/VST3/Lattice.vst3" || true
           fi
@@ -49,31 +49,31 @@ jobs:
             build-macos
             third_party/JUCE
           key: triad-macos15-v1-${{ github.sha }}
-      - name: Upload Hex MkI update artifact
+      - name: Upload Hex Library update artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Hex-MkI-macOS
+          name: Hex-Library-macOS
           path: |
-            dist/Hex-MkI-macOS.zip
-            dist/Hex-MkI-macOS.zip.sha256
+            dist/Hex-Library-macOS.zip
+            dist/Hex-Library-macOS.zip.sha256
           if-no-files-found: error
-      - name: Publish downloadable Hex MkI update
+      - name: Publish downloadable Hex Library update
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           cat > "$RUNNER_TEMP/hex-release-notes.md" <<'EOF'
-          Hex MkI 0.2.0 adds a permanent DX7 sound library. Import a folder and its subfolders once, then use the plugin's search, folder filter, and previous/next controls. DX7 32-voice banks expose all voices. Imported sounds are copied into the library, and the selected voice is saved with the DAW project.
+          Hex Library 0.2.1 adds a permanent DX7 sound library. Import a folder and its subfolders once, then use the plugin's search, folder filter, and previous/next controls. DX7 32-voice banks expose all voices. Imported sounds are copied into the library, and the selected voice is saved with the DAW project.
 
-          Download Hex-MkI-macOS.zip, quit Ableton Live, extract it, and run install-hex-macos.sh with bash in Terminal. The installer updates Hex MkI only and backs up the previous version. Instructions and corresponding source are included.
+          Download Hex-Library-macOS.zip, quit Ableton Live, extract it, and run install-hex-macos.sh with bash in Terminal. The installer updates Hex Library only and backs up the previous version. Instructions and corresponding source are included.
 
           Universal arm64 + x86_64 VST3, minimum macOS 11. DSP, VST3 host, library, and state tests passed on the build machine's native architecture. Local ad hoc signing; not Developer ID notarized.
           EOF
-          if ! gh release view v0.2.0-macos --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release create v0.2.0-macos --repo "$GITHUB_REPOSITORY" \
+          if ! gh release view v0.2.1-hex-library --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create v0.2.1-hex-library --repo "$GITHUB_REPOSITORY" \
               --target "$GITHUB_SHA" --prerelease \
-              --title 'Hex MkI 0.2.0 — Permanent Sound Library' \
+              --title 'Hex Library 0.2.1 — Permanent Sound Library' \
               --notes-file "$RUNNER_TEMP/hex-release-notes.md"
           fi
-          gh release upload v0.2.0-macos dist/Hex-MkI-macOS.zip dist/Hex-MkI-macOS.zip.sha256 \
+          gh release upload v0.2.1-hex-library dist/Hex-Library-macOS.zip dist/Hex-Library-macOS.zip.sha256 \
             --repo "$GITHUB_REPOSITORY" --clobber
