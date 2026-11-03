@@ -1,0 +1,63 @@
+name: Build Triad DeEss and Master for Mac
+on:
+  workflow_dispatch:
+  pull_request:
+    paths: ['Effects/**', '.github/workflows/effects.yml']
+  push:
+    branches: [main]
+    paths: ['Effects/**', '.github/workflows/effects.yml']
+permissions:
+  contents: read
+jobs:
+  mac:
+    name: ${{ matrix.product }} universal Mac
+    runs-on: macos-14
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: TriadDeEss
+            product: Triad DeEss
+            archive: Triad-DeEss-Mac
+          - target: TriadMaster
+            product: Triad Master
+            archive: Triad-Master-Mac
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure universal build
+        run: >-
+          cmake -S Effects -B build-effects -DCMAKE_BUILD_TYPE=Release
+          '-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64'
+          -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0
+      - name: Build plugin, editor, and tests
+        env:
+          TARGET: ${{ matrix.target }}
+        run: >-
+          cmake --build build-effects --parallel 3 --target
+          "${TARGET}_VST3" "${TARGET}_AU" "${TARGET}_Standalone"
+          "${TARGET}_tests" triad_effects_dsp_tests
+      - name: Test audio engine and native processor
+        env:
+          TARGET: ${{ matrix.target }}
+        run: ctest --test-dir build-effects --output-on-failure -R "effects_dsp|${TARGET}_processor"
+      - name: Package and sign
+        env:
+          TARGET: ${{ matrix.target }}
+          PRODUCT: ${{ matrix.product }}
+          ARCHIVE: ${{ matrix.archive }}
+        run: |
+          mkdir -p dist
+          for spec in VST3:vst3 AU:component Standalone:app; do
+            format="${spec%%:*}"
+            extension="${spec##*:}"
+            ditto "build-effects/${TARGET}_artefacts/Release/$format/$PRODUCT.$extension" "dist/$PRODUCT.$extension"
+            codesign --force --deep --sign - "dist/$PRODUCT.$extension"
+          done
+          cp Effects/scripts/Install.command dist/Install.command
+          chmod +x dist/Install.command
+          cp Effects/README.md dist/README.md
+          ditto -c -k --sequesterRsrc --keepParent dist "$ARCHIVE.zip"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.archive }}-universal
+          path: ${{ matrix.archive }}.zip
