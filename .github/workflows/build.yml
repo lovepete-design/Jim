@@ -1,0 +1,40 @@
+name: Build Triad Tune for Mac
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  mac:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure universal build
+        run: >-
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          '-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64'
+          -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0
+      - name: Compile plugins and DSP tests
+        run: cmake --build build --config Release --parallel 3
+      - name: Run DSP tests
+        run: ctest --test-dir build -C Release --output-on-failure
+      - name: Package Mac bundles
+        shell: bash
+        run: |
+          mkdir -p dist
+          ditto 'build/TriadTune_artefacts/Release/VST3/Triad Tune.vst3' 'dist/Triad Tune.vst3'
+          ditto 'build/TriadTune_artefacts/Release/AU/Triad Tune.component' 'dist/Triad Tune.component'
+          ditto 'build/TriadTune_artefacts/Release/Standalone/Triad Tune.app' 'dist/Triad Tune.app'
+          codesign --force --deep --sign - 'dist/Triad Tune.vst3'
+          codesign --force --deep --sign - 'dist/Triad Tune.component'
+          codesign --force --deep --sign - 'dist/Triad Tune.app'
+          cp scripts/Install.command dist/Install.command
+          cp README.md dist/README.md
+          chmod +x dist/Install.command
+          ditto -c -k --sequesterRsrc --keepParent dist Triad-Tune-Mac.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Triad-Tune-Mac-universal
+          path: Triad-Tune-Mac.zip
