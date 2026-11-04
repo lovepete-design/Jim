@@ -1,0 +1,42 @@
+name: Build Triad Phase for Mac
+on:
+  workflow_dispatch:
+  pull_request:
+    paths: ['Phaser/**', '.github/workflows/phaser.yml']
+  push:
+    branches: [main]
+    paths: ['Phaser/**', '.github/workflows/phaser.yml']
+permissions:
+  contents: read
+jobs:
+  mac:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure universal build
+        run: >-
+          cmake -S Phaser -B build-phase -DCMAKE_BUILD_TYPE=Release
+          '-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64'
+          -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0
+      - name: Build plugins and tests
+        run: cmake --build build-phase --parallel 3
+      - name: Test DSP, processor recall, and editor
+        run: ctest --test-dir build-phase --output-on-failure
+      - name: Package universal bundles
+        run: |
+          mkdir -p dist
+          for spec in VST3:vst3 AU:component Standalone:app; do
+            format="${spec%%:*}"
+            extension="${spec##*:}"
+            ditto "build-phase/TriadPhase_artefacts/Release/$format/Triad Phase.$extension" "dist/Triad Phase.$extension"
+            codesign --force --deep --sign - "dist/Triad Phase.$extension"
+          done
+          cp Phaser/scripts/Install.command dist/Install.command
+          chmod +x dist/Install.command
+          cp Phaser/README.md dist/README.md
+          cp build-phase/Triad-Phase-Preview.png dist/Triad-Phase-Preview.png
+          ditto -c -k --sequesterRsrc --keepParent dist Triad-Phase-Mac.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Triad-Phase-Mac-universal
+          path: Triad-Phase-Mac.zip
