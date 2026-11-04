@@ -1,4 +1,6 @@
-# Aurora 224 — Triad Audio
+> The current Mac release is Larry's Sexy Reverb. Use MAC-INSTALL.md and the compiled GitHub release; older Linux and source-launcher instructions below refer to the original Aurora224 build.
+
+# Larry's Sexy Reverb — Triad Audio
 
 An original stereo algorithmic reverb inspired by the lush, dark, modulated character of the Lexicon 224. This is not a recreation of its firmware, original algorithms, converters, or an authenticated hardware model. No Lexicon code or assets are used. Lexicon is a trademark of its respective owner; this project is independent.
 
@@ -10,7 +12,7 @@ See `MAC-START-HERE.md` and run `Build-and-Install-Mac.command` on your Mac to c
 
 `dist/Aurora224-linux-x86_64.zip` contains the compiled **Linux x86-64 VST3** bundle. It cannot run on macOS or Windows. VST3 uses `.vst3`; renaming it to the legacy `.vst` extension will not convert it.
 
-Extract and copy the entire `Aurora224.vst3` directory into `~/.vst3/`, then rescan plugins in your DAW. Insert **Aurora 224** on a stereo track or stereo effects return. Use the DAW's generic parameter/controls view: this release has no custom graphical editor. Mono buses and 64-bit sample buffers are not supported; 32-bit floating-point stereo processing is supported. A DAW's 64-bit executable is compatible with 32-bit sample processing.
+Extract and copy the entire `Aurora224.vst3` directory into `~/.vst3/`, then rescan plugins in your DAW. Insert **Larry's Sexy Reverb** on a stereo track or stereo effects return. Use the DAW's generic parameter/controls view: this release has no custom graphical editor. Mono buses and 64-bit sample buffers are not supported; 32-bit floating-point stereo processing is supported. A DAW's 64-bit executable is compatible with 32-bit sample processing.
 
 ## Controls
 

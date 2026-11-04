@@ -2,18 +2,19 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 trap 'status=$?; if [ "$status" -ne 0 ]; then echo "Installation stopped. See the error above."; fi; if [ -t 0 ]; then read -r -p "Press Return to close…" ignored; fi' EXIT
-plugin="$PWD/Aurora224.vst3"
+plugin_name="Larry's Sexy Reverb.vst3"
+plugin="$PWD/$plugin_name"
 test -d "$plugin"
 # Verify the supplied local signature before installing or clearing its quarantine.
 /usr/bin/codesign --verify --strict "$plugin"
 destination="$HOME/Library/Audio/Plug-Ins/VST3"
 mkdir -p "$destination"
-if [[ -e "$destination/Aurora224.vst3" ]]; then
+if [[ -e "$destination/$plugin_name" ]]; then
     backup="$HOME/Library/Application Support/Triad Audio/Plugin Backups"
     mkdir -p "$backup"
-    mv "$destination/Aurora224.vst3" "$backup/Aurora224-$(date +%Y%m%d-%H%M%S)-$$.vst3"
+    mv "$destination/$plugin_name" "$backup/Larrys-Sexy-Reverb-$(date +%Y%m%d-%H%M%S)-$$.vst3"
 fi
-/usr/bin/ditto "$plugin" "$destination/Aurora224.vst3"
-/usr/bin/codesign --verify --strict "$destination/Aurora224.vst3"
-/usr/bin/xattr -dr com.apple.quarantine "$destination/Aurora224.vst3"
-echo "Installed Aurora 224. Restart Ableton Live and rescan VST3 plugins."
+/usr/bin/ditto "$plugin" "$destination/$plugin_name"
+/usr/bin/codesign --verify --strict "$destination/$plugin_name"
+/usr/bin/xattr -dr com.apple.quarantine "$destination/$plugin_name"
+echo "Installed Larry's Sexy Reverb. Restart Ableton Live and rescan VST3 plugins."

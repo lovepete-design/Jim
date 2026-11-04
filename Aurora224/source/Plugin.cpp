@@ -11,8 +11,8 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 namespace {
-const FUID processorID(0x52B47C12, 0x936B44EE, 0xAFD29210, 0x11832240);
-const FUID controllerID(0x62B47C12, 0x936B44EE, 0xAFD29210, 0x11832241);
+const FUID processorID(0x8D7A13B4, 0x936B44EE, 0xAFD29210, 0x11832240);
+const FUID controllerID(0x9D7A13B4, 0x936B44EE, 0xAFD29210, 0x11832241);
 constexpr ParamID bypassID = 10;
 bool readState(IBStream* stream, std::array<double, aurora::parameterCount>& values, bool& bypass) {
     if (!stream) return false;
@@ -119,7 +119,7 @@ public:
 }
 BEGIN_FACTORY_DEF("Triad Audio", "", "")
 DEF_CLASS2(INLINE_UID_FROM_FUID(processorID), PClassInfo::kManyInstances, kVstAudioEffectClass,
-           "Aurora 224", Vst::kDistributable, "Fx|Reverb", "1.0.0", kVstVersionString, Processor::create)
+           "Larry's Sexy Reverb", Vst::kDistributable, "Fx|Reverb", "1.0.0", kVstVersionString, Processor::create)
 DEF_CLASS2(INLINE_UID_FROM_FUID(controllerID), PClassInfo::kManyInstances, kVstComponentControllerClass,
-           "Aurora 224 Controller", 0, "", "1.0.0", kVstVersionString, Controller::create)
+           "Larry's Sexy Reverb Controller", 0, "", "1.0.0", kVstVersionString, Controller::create)
 END_FACTORY

@@ -14,7 +14,7 @@ target_link_libraries(Aurora224 PRIVATE sdk)
 if(APPLE)
     set_target_properties(Aurora224 PROPERTIES
         MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/source/Info.plist")
-    smtg_target_set_bundle(Aurora224 BUNDLE_IDENTIFIER "audio.triad.aurora224" COMPANY_NAME "Triad Audio")
+    smtg_target_set_bundle(Aurora224 BUNDLE_IDENTIFIER "audio.triad.larryssexyreverb" COMPANY_NAME "Triad Audio")
 endif()
 enable_testing()
 add_executable(reverb_tests tests/ReverbTests.cpp)

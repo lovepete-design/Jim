@@ -4,10 +4,10 @@
 <dict>
     <key>CFBundleDevelopmentRegion</key><string>English</string>
     <key>CFBundleExecutable</key><string>Aurora224</string>
-    <key>CFBundleIdentifier</key><string>audio.triad.aurora224</string>
+    <key>CFBundleIdentifier</key><string>audio.triad.larryssexyreverb</string>
     <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
-    <key>CFBundleName</key><string>Aurora 224</string>
-    <key>CFBundleDisplayName</key><string>Aurora 224</string>
+    <key>CFBundleName</key><string>Larry's Sexy Reverb</string>
+    <key>CFBundleDisplayName</key><string>Larry's Sexy Reverb</string>
     <key>CFBundlePackageType</key><string>BNDL</string>
     <key>CFBundleShortVersionString</key><string>1.0.0</string>
     <key>CFBundleVersion</key><string>1.0.0</string>

@@ -1,4 +1,4 @@
-name: Aurora 224 verified macOS
+name: Larry's Sexy Reverb verified macOS
 on:
   push:
     branches: [codex/aurora224-macos]
@@ -17,8 +17,8 @@ jobs:
         run: bash Aurora224/scripts/build-macos-ci.sh
       - uses: actions/upload-artifact@v4
         with:
-          name: Aurora224-universal-build
-          path: Aurora224/dist/Aurora224-macOS.zip
+          name: Larrys-Sexy-Reverb-universal-build
+          path: Aurora224/dist/Larrys-Sexy-Reverb-macOS.zip
           if-no-files-found: error
   verify:
     needs: build
@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: Aurora224-universal-build
+          name: Larrys-Sexy-Reverb-universal-build
       - name: Validate exact universal bundle on native CPU
         shell: bash
         env:
@@ -42,32 +42,33 @@ jobs:
         run: |
           set -euo pipefail
           test "$(uname -m)" = "$EXPECTED_ARCH"
-          ditto -x -k Aurora224-macOS.zip .
-          cd Aurora224-macOS
+          ditto -x -k Larrys-Sexy-Reverb-macOS.zip .
+          cd Larrys-Sexy-Reverb-macOS
           python3 - <<'PYTHON'
           import plistlib
           from pathlib import Path
-          info = plistlib.loads(Path('Aurora224.vst3/Contents/Info.plist').read_bytes())
-          assert info['CFBundleIdentifier'] == 'audio.triad.aurora224'
+          info = plistlib.loads(Path("Larry's Sexy Reverb.vst3/Contents/Info.plist").read_bytes())
+          assert info['CFBundleIdentifier'] == 'audio.triad.larryssexyreverb'
           assert info['CFBundlePackageType'] == 'BNDL'
           assert info['CFBundleVersion'] == '1.0.0'
           assert info['CFBundleExecutable'] == 'Aurora224'
           assert info['LSMinimumSystemVersion'] == '11.0'
           print('macOS bundle metadata verified')
           PYTHON
-          codesign --verify --strict Aurora224.vst3
-          lipo Aurora224.vst3/Contents/MacOS/Aurora224 -verify_arch arm64 x86_64
+          plugin="$PWD/Larry's Sexy Reverb.vst3"
+          codesign --verify --strict "$plugin"
+          lipo "$plugin/Contents/MacOS/Aurora224" -verify_arch arm64 x86_64
           chmod +x verification-tools/*
-          verification-tools/validator "$PWD/Aurora224.vst3" 2>&1 | tee "validator-$EXPECTED_ARCH.log"
+          verification-tools/validator "$plugin" 2>&1 | tee "validator-$EXPECTED_ARCH.log"
           verification-tools/reverb_tests 2>&1 | tee "dsp-$EXPECTED_ARCH.log"
-          shasum -a 256 Aurora224.vst3/Contents/MacOS/Aurora224 > "binary-$EXPECTED_ARCH.sha256"
+          shasum -a 256 "$plugin/Contents/MacOS/Aurora224" > "binary-$EXPECTED_ARCH.sha256"
       - uses: actions/upload-artifact@v4
         with:
-          name: Aurora224-verification-${{ matrix.arch }}
+          name: Larrys-Sexy-Reverb-verification-${{ matrix.arch }}
           path: |
-            Aurora224-macOS/validator-*.log
-            Aurora224-macOS/dsp-*.log
-            Aurora224-macOS/binary-*.sha256
+            Larrys-Sexy-Reverb-macOS/validator-*.log
+            Larrys-Sexy-Reverb-macOS/dsp-*.log
+            Larrys-Sexy-Reverb-macOS/binary-*.sha256
   release:
     needs: [build, verify]
     runs-on: macos-15
@@ -77,10 +78,10 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: Aurora224-universal-build
+          name: Larrys-Sexy-Reverb-universal-build
       - uses: actions/download-artifact@v4
         with:
-          pattern: Aurora224-verification-*
+          pattern: Larrys-Sexy-Reverb-verification-*
           path: verification
           merge-multiple: true
       - name: Package verified plugin and publish download
@@ -89,19 +90,19 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          ditto -x -k Aurora224-macOS.zip .
-          cp verification/* Aurora224-macOS/
-          rm -r Aurora224-macOS/verification-tools
-          ditto -c -k --sequesterRsrc --keepParent Aurora224-macOS Aurora224-macOS-verified.zip
-          shasum -a 256 Aurora224-macOS-verified.zip > Aurora224-macOS-verified.zip.sha256
+          ditto -x -k Larrys-Sexy-Reverb-macOS.zip .
+          cp verification/* Larrys-Sexy-Reverb-macOS/
+          rm -r Larrys-Sexy-Reverb-macOS/verification-tools
+          ditto -c -k --sequesterRsrc --keepParent Larrys-Sexy-Reverb-macOS Larrys-Sexy-Reverb-macOS-verified.zip
+          shasum -a 256 Larrys-Sexy-Reverb-macOS-verified.zip > Larrys-Sexy-Reverb-macOS-verified.zip.sha256
           cat > notes.md <<'NOTES'
-          Aurora 224: an original Lexicon 224-inspired Hall, Plate, and Chamber reverb.
+          Larry's Sexy Reverb: an original Lexicon 224-inspired Hall, Plate, and Chamber reverb.
 
           Compiled universal VST3 for macOS 11+, Intel and Apple Silicon. Official Steinberg VST3 validator and DSP tests passed natively on both CPU architectures against the same universal plugin binary. Validation logs, corresponding source, licenses, and installer included. No Xcode required to install.
 
           Quit your DAW, extract the ZIP, and run Install-Mac.command with bash in Terminal. Uses your DAW's generic parameter view. Local ad hoc signature; not Apple notarized. Requires a VST3 host; Logic Pro requires Audio Units.
           NOTES
-          tag="aurora224-macos-${GITHUB_SHA:0:12}"
-          gh release create "$tag" Aurora224-macOS-verified.zip Aurora224-macOS-verified.zip.sha256 \
+          tag="larrys-sexy-reverb-macos-${GITHUB_SHA:0:12}"
+          gh release create "$tag" Larrys-Sexy-Reverb-macOS-verified.zip Larrys-Sexy-Reverb-macOS-verified.zip.sha256 \
             --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --prerelease \
-            --title 'Aurora 224 — verified universal Mac VST3' --notes-file notes.md
+            --title "Larry's Sexy Reverb — verified universal Mac VST3" --notes-file notes.md
