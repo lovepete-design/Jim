@@ -1,0 +1,96 @@
+name: Aurora 224 verified macOS
+on:
+  push:
+    branches: [codex/aurora224-macos]
+permissions:
+  contents: read
+concurrency:
+  group: aurora224-macos-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build universal plugin, sign, and validate native architecture
+        run: bash Aurora224/scripts/build-macos-ci.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Aurora224-universal-build
+          path: Aurora224/dist/Aurora224-macOS.zip
+          if-no-files-found: error
+  verify:
+    needs: build
+    strategy:
+      matrix:
+        include:
+          - runner: macos-15
+            arch: arm64
+          - runner: macos-15-intel
+            arch: x86_64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: Aurora224-universal-build
+      - name: Validate exact universal bundle on native CPU
+        shell: bash
+        env:
+          EXPECTED_ARCH: ${{ matrix.arch }}
+        run: |
+          set -euo pipefail
+          test "$(uname -m)" = "$EXPECTED_ARCH"
+          ditto -x -k Aurora224-macOS.zip .
+          cd Aurora224-macOS
+          codesign --verify --strict Aurora224.vst3
+          lipo -verify_arch arm64 x86_64 Aurora224.vst3/Contents/MacOS/Aurora224
+          chmod +x verification-tools/*
+          verification-tools/validator "$PWD/Aurora224.vst3" 2>&1 | tee "validator-$EXPECTED_ARCH.log"
+          verification-tools/reverb_tests 2>&1 | tee "dsp-$EXPECTED_ARCH.log"
+          shasum -a 256 Aurora224.vst3/Contents/MacOS/Aurora224 > "binary-$EXPECTED_ARCH.sha256"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Aurora224-verification-${{ matrix.arch }}
+          path: |
+            Aurora224-macOS/validator-*.log
+            Aurora224-macOS/dsp-*.log
+            Aurora224-macOS/binary-*.sha256
+  release:
+    needs: [build, verify]
+    runs-on: macos-15
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: Aurora224-universal-build
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: Aurora224-verification-*
+          path: verification
+          merge-multiple: true
+      - name: Package verified plugin and publish download
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ditto -x -k Aurora224-macOS.zip .
+          cp verification/* Aurora224-macOS/
+          rm -r Aurora224-macOS/verification-tools
+          ditto -c -k --sequesterRsrc --keepParent Aurora224-macOS Aurora224-macOS-verified.zip
+          shasum -a 256 Aurora224-macOS-verified.zip > Aurora224-macOS-verified.zip.sha256
+          cat > notes.md <<'NOTES'
+          Aurora 224: an original Lexicon 224-inspired Hall, Plate, and Chamber reverb.
+
+          Compiled universal VST3 for macOS 11+, Intel and Apple Silicon. Official Steinberg VST3 validator and DSP tests passed natively on both CPU architectures against the same universal plugin binary. Validation logs, corresponding source, licenses, and installer included. No Xcode required to install.
+
+          Quit your DAW, extract the ZIP, and run Install-Mac.command with bash in Terminal. Uses your DAW's generic parameter view. Local ad hoc signature; not Apple notarized. Requires a VST3 host; Logic Pro requires Audio Units.
+          NOTES
+          tag="aurora224-macos-${GITHUB_SHA:0:12}"
+          gh release create "$tag" Aurora224-macOS-verified.zip Aurora224-macOS-verified.zip.sha256 \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --prerelease \
+            --title 'Aurora 224 — verified universal Mac VST3' --notes-file notes.md

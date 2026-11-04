@@ -1,0 +1,6 @@
+/build/
+/dist/
+.DS_Store
+/build-mac/
+/.mac-build-tools/
+/plugin-backups/
