@@ -1,0 +1,81 @@
+name: Publish tested Larrys Sexy Reverb
+on:
+  push:
+    branches: [codex/larry-release]
+permissions:
+  actions: read
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Require passing native Mac verification
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/41910090082/jobs" > jobs.json
+          python3 - <<'PY'
+          import json
+          jobs=json.load(open('jobs.json'))['jobs']
+          for name in ['build','verify (macos-15, arm64)','verify (macos-15-intel, x86_64)']:
+              job=next(j for j in jobs if j['name']==name)
+              assert job['conclusion']=='success', job
+          print('Native Apple Silicon and Intel build/test gates passed.')
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          name: Larrys-Sexy-Reverb-universal-build
+          run-id: 41910090082
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: Larrys-Sexy-Reverb-verification-*
+          run-id: 41910090082
+          github-token: ${{ github.token }}
+          path: verification
+          merge-multiple: true
+      - name: Preserve signed bundle, confirm tested hashes, and publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import zipfile,hashlib,plistlib,struct
+          from pathlib import Path
+          prefix='Larrys-Sexy-Reverb-macOS/'
+          with zipfile.ZipFile('Larrys-Sexy-Reverb-macOS.zip') as src:
+              assert src.testzip() is None
+              binary=src.read(prefix+"Larry's Sexy Reverb.vst3/Contents/MacOS/Aurora224")
+              info=plistlib.loads(src.read(prefix+"Larry's Sexy Reverb.vst3/Contents/Info.plist"))
+              assert info['CFBundleIdentifier']=='audio.triad.larryssexyreverb'
+              assert info['CFBundleName']=="Larry's Sexy Reverb"
+              magic,count=struct.unpack_from('>II',binary)
+              assert magic==0xcafebabe
+              assert {struct.unpack_from('>I',binary,8+i*20)[0] for i in range(count)}=={0x01000007,0x0100000c}
+              digest=hashlib.sha256(binary).hexdigest()
+              for arch in ['arm64','x86_64']:
+                  assert Path(f'verification/binary-{arch}.sha256').read_text().split()[0]==digest
+                  assert '47 tests passed, 0 tests failed' in Path(f'verification/validator-{arch}.log').read_text()
+                  assert 'PASS:' in Path(f'verification/dsp-{arch}.log').read_text()
+              additions={prefix+p.name:p for p in Path('verification').iterdir() if p.is_file()}
+              with zipfile.ZipFile('Larrys-Sexy-Reverb-macOS-verified.zip','w',zipfile.ZIP_DEFLATED) as out:
+                  for entry in src.infolist():
+                      if '/verification-tools/' not in entry.filename and entry.filename not in additions:
+                          out.writestr(entry,src.read(entry.filename))
+                  for name,p in additions.items(): out.write(p,name)
+          p=Path('Larrys-Sexy-Reverb-macOS-verified.zip')
+          Path(str(p)+'.sha256').write_text(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.name+'\n')
+          with zipfile.ZipFile(p) as z: assert z.testzip() is None
+          print('Signed binary matches both native test runs. ZIP verified.')
+          PY
+          cat > notes.md <<'NOTES'
+          Larry's Sexy Reverb: a renamed version of Aurora 224 with a distinct plugin identity.
+
+          Universal macOS 11+ VST3 for Intel and Apple Silicon. All 47 Steinberg validator tests and DSP tests passed natively on both CPUs. The signed plugin binary matches the hashes from both native test runs. No Xcode needed. Logs, source, licenses, and installer included.
+
+          Extract the ZIP and run Install-Mac.command with bash in Terminal. Local ad hoc signature, not Apple notarized. Uses the DAW's generic parameter view. Install alongside Aurora 224; existing projects retain their original plugin.
+          NOTES
+          gh release create larrys-sexy-reverb-1.0.0 \
+            Larrys-Sexy-Reverb-macOS-verified.zip Larrys-Sexy-Reverb-macOS-verified.zip.sha256 \
+            --repo "$GITHUB_REPOSITORY" --target d54f89fd4c2b54278791abfe497f071e7e80f0e7 \
+            --prerelease --title "Larry's Sexy Reverb — verified Mac VST3" --notes-file notes.md
