@@ -9,6 +9,8 @@ int main(int argc, char** argv) {
     OracleProcessor restored; restored.setStateInformation(data.getData(), static_cast<int>(data.getSize()));
     check(restored.state.getRawParameterValue("sync")->load() > 0.5f, "Sync mode survives project recall");
     check(std::abs(restored.state.getRawParameterValue("coarse")->load() - 12) < 0.01f, "Oscillator tuning survives recall");
+    for (const auto& spec : oracleControls)
+        check(std::abs(original.state.getRawParameterValue(spec.id)->load() - restored.state.getRawParameterValue(spec.id)->load()) < std::max(0.001f, spec.step * 0.01f), "Patch controls survive recall at their declared precision");
     original.prepareToPlay(48000, 256); restored.prepareToPlay(48000, 256);
     check(original.acceptsMidi() && original.getLatencySamples() == 0, "Synth accepts MIDI without buffered latency");
     juce::AudioBuffer<float> a(2, 256), b(2, 256);
@@ -20,8 +22,16 @@ int main(int argc, char** argv) {
             check(a.getMagnitude(0, 0, 64) == 0, "Sample-offset MIDI produces no sound before note-on");
             check(a.getMagnitude(0, 64, 192) > 0, "MIDI note-on produces sound in the same block");
         }
-        for (int ch = 0; ch < 2; ++ch) for (int i = 0; i < 256; ++i)
+        for (int ch = 0; ch < 2; ++ch) for (int i = 0; i < 256; ++i) {
+            if (a.getSample(ch, i) != b.getSample(ch, i)) {
+                std::cerr << "Recall mismatch at block " << block << ", sample " << i << ": " << a.getSample(ch, i) << " / " << b.getSample(ch, i) << '\n';
+                for (const auto& spec : oracleControls) {
+                    const float x = original.state.getRawParameterValue(spec.id)->load(), y = restored.state.getRawParameterValue(spec.id)->load();
+                    if (x != y) std::cerr << spec.id << ": " << x << " / " << y << '\n';
+                }
+            }
             check(a.getSample(ch, i) == b.getSample(ch, i), "Recalled patch renders identically");
+        }
     }
     original.panicRequested.store(true); juce::MidiBuffer empty; original.processBlock(a, empty);
     check(a.getMagnitude(0, 256) == 0, "Panic clears sounding notes and chorus tails");

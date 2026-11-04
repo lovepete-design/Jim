@@ -24,15 +24,24 @@ bool OracleProcessor::isBusesLayoutSupported(const BusesLayout& layout) const {
 }
 void OracleProcessor::prepareToPlay(double rate, int) { engine.prepare(rate); updateSettings(); setLatencySamples(0); }
 void OracleProcessor::updateSettings() {
+    // Normalised skewed host parameters can differ by a few float ULPs after
+    // XML recall. Use their declared step consistently before driving phase,
+    // sync, or envelope timing, where tiny differences can move an edge.
+    auto value = [this](size_t index) {
+        const auto& spec = oracleControls[index];
+        const double step = spec.step, minimum = spec.min;
+        const double raw = values[index]->load();
+        return std::clamp(minimum + std::round((raw - minimum) / step) * step, minimum, static_cast<double>(spec.max));
+    };
     oracle::Settings s;
-    s.mix = values[0]->load() * 0.01; s.coarse = values[1]->load(); s.detune = values[2]->load();
-    s.pulse = values[3]->load() * 0.01; s.noise = values[4]->load() * 0.01; s.cutoff = values[5]->load();
-    s.resonance = values[6]->load() * 0.01; s.filterAmount = values[7]->load();
-    s.ampAttack = values[8]->load(); s.ampDecay = values[9]->load(); s.ampSustain = values[10]->load() * 0.01; s.ampRelease = values[11]->load();
-    s.filterAttack = values[12]->load(); s.filterDecay = values[13]->load(); s.filterSustain = values[14]->load() * 0.01; s.filterRelease = values[15]->load();
-    s.lfoRate = values[16]->load(); s.vibrato = values[17]->load() * 0.01; s.filterLfo = values[18]->load();
-    s.polyB = values[19]->load() * 0.01; s.polyEnv = values[20]->load() * 0.01; s.chorus = values[21]->load() * 0.01;
-    s.spread = values[22]->load() * 0.01; s.drift = values[23]->load() * 0.01; s.volume = values[24]->load();
+    s.mix = value(0) * 0.01; s.coarse = value(1); s.detune = value(2);
+    s.pulse = value(3) * 0.01; s.noise = value(4) * 0.01; s.cutoff = value(5);
+    s.resonance = value(6) * 0.01; s.filterAmount = value(7);
+    s.ampAttack = value(8); s.ampDecay = value(9); s.ampSustain = value(10) * 0.01; s.ampRelease = value(11);
+    s.filterAttack = value(12); s.filterDecay = value(13); s.filterSustain = value(14) * 0.01; s.filterRelease = value(15);
+    s.lfoRate = value(16); s.vibrato = value(17) * 0.01; s.filterLfo = value(18);
+    s.polyB = value(19) * 0.01; s.polyEnv = value(20) * 0.01; s.chorus = value(21) * 0.01;
+    s.spread = value(22) * 0.01; s.drift = value(23) * 0.01; s.volume = value(24);
     s.waveA = static_cast<int>(waveA->load()); s.waveB = static_cast<int>(waveB->load()); s.sync = sync->load() > 0.5f; s.keytrack = keytrack->load() > 0.5f;
     engine.setSettings(s);
 }
