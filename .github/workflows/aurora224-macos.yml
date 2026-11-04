@@ -44,6 +44,17 @@ jobs:
           test "$(uname -m)" = "$EXPECTED_ARCH"
           ditto -x -k Aurora224-macOS.zip .
           cd Aurora224-macOS
+          python3 - <<'PYTHON'
+          import plistlib
+          from pathlib import Path
+          info = plistlib.loads(Path('Aurora224.vst3/Contents/Info.plist').read_bytes())
+          assert info['CFBundleIdentifier'] == 'audio.triad.aurora224'
+          assert info['CFBundlePackageType'] == 'BNDL'
+          assert info['CFBundleVersion'] == '1.0.0'
+          assert info['CFBundleExecutable'] == 'Aurora224'
+          assert info['LSMinimumSystemVersion'] == '11.0'
+          print('macOS bundle metadata verified')
+          PYTHON
           codesign --verify --strict Aurora224.vst3
           lipo Aurora224.vst3/Contents/MacOS/Aurora224 -verify_arch arm64 x86_64
           chmod +x verification-tools/*

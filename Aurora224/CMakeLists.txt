@@ -12,6 +12,8 @@ smtg_add_vst3plugin(Aurora224 source/Plugin.cpp)
 target_include_directories(Aurora224 PRIVATE "${VST3_SDK_ROOT}")
 target_link_libraries(Aurora224 PRIVATE sdk)
 if(APPLE)
+    set_target_properties(Aurora224 PROPERTIES
+        MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/source/Info.plist")
     smtg_target_set_bundle(Aurora224 BUNDLE_IDENTIFIER "audio.triad.aurora224" COMPANY_NAME "Triad Audio")
 endif()
 enable_testing()
