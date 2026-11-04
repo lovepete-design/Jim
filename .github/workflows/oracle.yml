@@ -1,0 +1,42 @@
+name: Build Triad Oracle for Mac
+on:
+  workflow_dispatch:
+  pull_request:
+    paths: ['Oracle/**', '.github/workflows/oracle.yml']
+  push:
+    branches: [main]
+    paths: ['Oracle/**', '.github/workflows/oracle.yml']
+permissions:
+  contents: read
+jobs:
+  mac:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure universal build
+        run: >-
+          cmake -S Oracle -B build-oracle -DCMAKE_BUILD_TYPE=Release
+          '-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64'
+          -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0
+      - name: Build instrument and tests
+        run: cmake --build build-oracle --parallel 3
+      - name: Test voices, MIDI, patches, state recall, and editor
+        run: ctest --test-dir build-oracle --output-on-failure
+      - name: Package universal instrument
+        run: |
+          mkdir -p dist
+          for spec in VST3:vst3 AU:component Standalone:app; do
+            format="${spec%%:*}"
+            extension="${spec##*:}"
+            ditto "build-oracle/TriadOracle_artefacts/Release/$format/Triad Oracle.$extension" "dist/Triad Oracle.$extension"
+            codesign --force --deep --sign - "dist/Triad Oracle.$extension"
+          done
+          cp Oracle/scripts/Install.command dist/Install.command
+          chmod +x dist/Install.command
+          cp Oracle/README.md dist/README.md
+          cp build-oracle/Triad-Oracle-Preview.png dist/Triad-Oracle-Preview.png
+          ditto -c -k --sequesterRsrc --keepParent dist Triad-Oracle-Mac.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Triad-Oracle-Mac-universal
+          path: Triad-Oracle-Mac.zip
