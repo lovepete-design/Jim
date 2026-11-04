@@ -70,7 +70,7 @@ public:
         if (data.symbolicSampleSize != kSample32) return kResultFalse;
         auto** in = data.inputs[0].channelBuffers32; auto** out = data.outputs[0].channelBuffers32;
         if (!in || !out || !in[0] || !in[1] || !out[0] || !out[1]) return kResultFalse;
-        data.outputs[0].silenceFlags = 0;
+        data.outputs[0].silenceFlags = 3;
         for (int32 i = 0; i < data.numSamples; ++i) {
             apply(i);
             float l = (data.inputs[0].silenceFlags & 1) ? 0.f : in[0][i];
@@ -79,6 +79,8 @@ public:
             if (!std::isfinite(r)) r = 0.f;
             float wl = 0.f, wr = 0.f; engine.tick(l, r, wl, wr, values);
             out[0][i] = bypass ? l : wl; out[1][i] = bypass ? r : wr;
+            if (out[0][i] != 0.f) data.outputs[0].silenceFlags &= ~uint64(1);
+            if (out[1][i] != 0.f) data.outputs[0].silenceFlags &= ~uint64(2);
         }
         return kResultOk;
     }

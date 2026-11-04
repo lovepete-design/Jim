@@ -15,7 +15,7 @@ plugin="$root/build-mac/VST3/Release/Aurora224.vst3"
 validator="$root/build-mac/bin/Release/validator"
 test -d "$plugin"
 test -x "$validator"
-lipo -verify_arch arm64 x86_64 "$plugin/Contents/MacOS/Aurora224"
+lipo "$plugin/Contents/MacOS/Aurora224" -verify_arch arm64 x86_64
 codesign --force --sign - "$plugin"
 codesign --verify --strict "$plugin"
 "$validator" "$plugin" 2>&1 | tee dist/validator-native.log

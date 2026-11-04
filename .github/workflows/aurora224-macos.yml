@@ -45,7 +45,7 @@ jobs:
           ditto -x -k Aurora224-macOS.zip .
           cd Aurora224-macOS
           codesign --verify --strict Aurora224.vst3
-          lipo -verify_arch arm64 x86_64 Aurora224.vst3/Contents/MacOS/Aurora224
+          lipo Aurora224.vst3/Contents/MacOS/Aurora224 -verify_arch arm64 x86_64
           chmod +x verification-tools/*
           verification-tools/validator "$PWD/Aurora224.vst3" 2>&1 | tee "validator-$EXPECTED_ARCH.log"
           verification-tools/reverb_tests 2>&1 | tee "dsp-$EXPECTED_ARCH.log"

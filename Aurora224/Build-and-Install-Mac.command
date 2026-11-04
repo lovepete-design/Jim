@@ -54,7 +54,7 @@ echo "Building Aurora 224 for Apple Silicon and Intel…"
 "$(dirname "$CMAKE_BIN")/ctest" --test-dir "$BUILD_DIR" -C Release --output-on-failure
 PLUGIN="$BUILD_DIR/VST3/Release/Aurora224.vst3"
 test -d "$PLUGIN"
-/usr/bin/lipo -verify_arch arm64 x86_64 "$PLUGIN/Contents/MacOS/Aurora224"
+/usr/bin/lipo "$PLUGIN/Contents/MacOS/Aurora224" -verify_arch arm64 x86_64
 /usr/bin/codesign --force --sign - "$PLUGIN"
 /usr/bin/codesign --verify --strict "$PLUGIN"
 INSTALL_DIR="$HOME/Library/Audio/Plug-Ins/VST3"
