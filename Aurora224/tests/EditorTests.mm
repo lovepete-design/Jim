@@ -32,6 +32,7 @@ int main(int argc,char** argv) {
     @autoreleasepool {
         try {
             require(argc>=2,"expected plugin bundle path");
+            std::cerr<<"Editor test: starting AppKit\n";
             [NSApplication sharedApplication];
             [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
             CFURLRef url=CFURLCreateFromFileSystemRepresentation(nullptr,(const UInt8*)argv[1],std::strlen(argv[1]),true);
@@ -45,6 +46,7 @@ int main(int argc,char** argv) {
             using FactoryProc=IPluginFactory* (*)();
             auto getFactory=(FactoryProc)CFBundleGetFunctionPointerForName(bundle,CFSTR("GetPluginFactory"));
             require(getFactory!=nullptr,"missing factory");
+            std::cerr<<"Editor test: factory loaded\n";
             IPluginFactory* factory=getFactory();
             IEditController* controller=nullptr;
             for(int i=0;i<factory->countClasses();++i) {
@@ -60,6 +62,8 @@ int main(int argc,char** argv) {
             window.releasedWhenClosed=NO;
             window.title=@"Larry's Sexy Reverb";
             for(int cycle=0;cycle<3;++cycle) {
+              @autoreleasepool {
+                std::cerr<<"Editor test: attach cycle "<<cycle<<"\n";
                 IPlugView* view=controller->createView(ViewType::kEditor);
                 require(view!=nullptr,"custom editor not available");
                 require(view->isPlatformTypeSupported(kPlatformTypeNSView)==kResultTrue,"NSView unsupported");
@@ -67,6 +71,7 @@ int main(int argc,char** argv) {
                 ViewRect size{}; view->getSize(&size);
                 require(size.getWidth()==460 && size.getHeight()==820,"wrong editor size");
                 require(view->attached(window.contentView,kPlatformTypeNSView)==kResultOk,"editor attach failed");
+                std::cerr<<"Editor test: attached\n";
                 action(window.contentView,402); // init
                 if(cycle==0 && argc>=3) {
                     NSView* panel=window.contentView.subviews.firstObject;
@@ -76,6 +81,7 @@ int main(int argc,char** argv) {
                     NSData* png=[image representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
                     require([png writeToFile:[NSString stringWithUTF8String:argv[2]] atomically:YES],"preview capture failed");
                 }
+                std::cerr<<"Editor test: screenshot captured, exercising controls\n";
                 NSControl* decay=(NSControl*)[window.contentView viewWithTag:1];
                 require(decay!=nil,"decay fader missing");
                 decay.doubleValue=.61; action(window.contentView,1);
@@ -100,13 +106,17 @@ int main(int argc,char** argv) {
                 require(view->removed()==kResultOk,"editor remove failed");
                 require(window.contentView.subviews.count==0,"editor leaked attached subview");
                 view->release();
+                std::cerr<<"Editor test: detached\n";
+              }
             }
+            std::cerr<<"Editor test: closing controller\n";
             [window close]; [window release];
             controller->setComponentHandler(nullptr); handler->release();
             controller->terminate(); controller->release(); factory->release();
+            std::cerr<<"Editor test: unloading module\n";
             require(exit(),"module exit failed");
             CFBundleUnloadExecutable(bundle); CFRelease(bundle);
-            std::cout<<"PASS: native editor lifecycle x3, faders, preset and mode buttons, bypass, mix, reset, page switching, automation synchronization, and balanced edit gestures\n";
+            std::cout<<"PASS: native editor lifecycle x3, faders, preset and mode buttons, bypass, mix, reset, page switching, automation synchronization, and balanced edit gestures\n"<<std::flush;
         } catch(const std::exception& e) { std::cerr<<e.what()<<"\n"; return 1; }
     }
 }

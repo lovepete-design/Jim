@@ -19,7 +19,12 @@ lipo "$plugin/Contents/MacOS/Aurora224" -verify_arch arm64 x86_64
 codesign --force --sign - "$plugin"
 codesign --verify --strict "$plugin"
 "$validator" "$plugin" 2>&1 | tee dist/validator-native.log
-"$root/build-mac/editor_tests" "$plugin" "$root/dist/Interface.png" 2>&1 | tee dist/editor-native.log
+if "$root/build-mac/editor_tests" "$plugin" "$root/dist/Interface.png" 2>&1 | tee dist/editor-native.log; then
+    :
+else
+    lldb --batch -o run -k 'thread backtrace all' -- "$root/build-mac/editor_tests" "$plugin" "$root/dist/Interface.png" || true
+    exit 1
+fi
 mkdir -p dist/Larrys-Sexy-Reverb-macOS/verification-tools
 ditto "$plugin" "dist/Larrys-Sexy-Reverb-macOS/Larry's Sexy Reverb.vst3"
 cp "$validator" build-mac/reverb_tests build-mac/editor_tests dist/Larrys-Sexy-Reverb-macOS/verification-tools/
