@@ -96,9 +96,9 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: "set -euo pipefail\npython3 - <<'PYTHON'\nimport zipfile,hashlib,plistlib\n\
-        from pathlib import Path\nprefix='Larrys-Sexy-Reverb-macOS/'\nwith zipfile.ZipFile('Larrys-Sexy-Reverb-macOS.zip')\
-        \ as src:\n    assert src.testzip() is None\n    plugin=prefix+\"Larry's Sexy\
-        \ Reverb.vst3/Contents/\"\n    binary=src.read(plugin+'MacOS/Aurora224')\n\
+        from copy import copy\nfrom pathlib import Path\nprefix='Larrys-Sexy-Reverb-macOS/'\n\
+        with zipfile.ZipFile('Larrys-Sexy-Reverb-macOS.zip') as src:\n    assert src.testzip()\
+        \ is None\n    plugin=prefix+\"Larry's Sexy Reverb.vst3/Contents/\"\n    binary=src.read(plugin+'MacOS/Aurora224')\n\
         \    info=plistlib.loads(src.read(plugin+'Info.plist'))\n    assert info['CFBundleIdentifier']=='audio.triad.larryssexyreverb'\n\
         \    assert info['CFBundleVersion']=='1.1.0'\n    digest=hashlib.sha256(binary).hexdigest()\n\
         \    for arch in ['arm64','x86_64']:\n        assert Path(f'verification/binary-{arch}.sha256').read_text().split()[0]==digest\n\
@@ -109,8 +109,8 @@ jobs:
         \ p.is_file()}\n    with zipfile.ZipFile('Larrys-Sexy-Reverb-macOS-verified.zip','w',zipfile.ZIP_DEFLATED)\
         \ as out:\n        for entry in src.infolist():\n            if '/verification-tools/'\
         \ not in entry.filename and entry.filename not in additions:\n           \
-        \     out.writestr(entry,src.read(entry.filename))\n        for name,p in\
-        \ additions.items(): out.write(p,name)\n    Path('Interface.png').write_bytes(src.read(prefix+'Interface.png'))\n\
+        \     out.writestr(copy(entry),src.read(entry.filename))\n        for name,p\
+        \ in additions.items(): out.write(p,name)\n    Path('Interface.png').write_bytes(src.read(prefix+'Interface.png'))\n\
         p=Path('Larrys-Sexy-Reverb-macOS-verified.zip')\nPath(str(p)+'.sha256').write_text(hashlib.sha256(p.read_bytes()).hexdigest()+'\
         \  '+p.name+'\\n')\nwith zipfile.ZipFile(p) as z: assert z.testzip() is None\n\
         print('Exact signed Mac binary and native editor tests verified.')\nPYTHON\n\
