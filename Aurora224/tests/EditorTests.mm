@@ -37,6 +37,11 @@ int main(int argc,char** argv) {
             CFURLRef url=CFURLCreateFromFileSystemRepresentation(nullptr,(const UInt8*)argv[1],std::strlen(argv[1]),true);
             CFBundleRef bundle=CFBundleCreate(nullptr,url); CFRelease(url);
             require(bundle && CFBundleLoadExecutable(bundle),"cannot load plugin bundle");
+            using EntryProc=bool (*)(CFBundleRef);
+            using ExitProc=bool (*)();
+            auto entry=(EntryProc)CFBundleGetFunctionPointerForName(bundle,CFSTR("bundleEntry"));
+            auto exit=(ExitProc)CFBundleGetFunctionPointerForName(bundle,CFSTR("bundleExit"));
+            require(entry && exit && entry(bundle),"module init failed");
             using FactoryProc=IPluginFactory* (*)();
             auto getFactory=(FactoryProc)CFBundleGetFunctionPointerForName(bundle,CFSTR("GetPluginFactory"));
             require(getFactory!=nullptr,"missing factory");
@@ -99,6 +104,7 @@ int main(int argc,char** argv) {
             [window close]; [window release];
             controller->setComponentHandler(nullptr); handler->release();
             controller->terminate(); controller->release(); factory->release();
+            require(exit(),"module exit failed");
             CFBundleUnloadExecutable(bundle); CFRelease(bundle);
             std::cout<<"PASS: native editor lifecycle x3, faders, preset and mode buttons, bypass, mix, reset, page switching, automation synchronization, and balanced edit gestures\n";
         } catch(const std::exception& e) { std::cerr<<e.what()<<"\n"; return 1; }

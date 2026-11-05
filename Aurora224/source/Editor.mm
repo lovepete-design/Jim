@@ -43,7 +43,7 @@ const char* toneNames[]{"DIFFUSE","BASS","WIDTH","DAMP","MOD","MIX"};
 @implementation LRButton
 - (void)drawRect:(NSRect)dirty {
     (void)dirty;
-    BOOL lit=self.state==NSControlStateValueOn || self.highlighted;
+    BOOL lit=self.state==NSControlStateValueOn || [self.cell isHighlighted];
     NSRect r=NSInsetRect(self.bounds,1,1);
     box(r,0x766f5d,5); r=NSInsetRect(r,1,1);
     NSColor* top=color(self.blue ? (lit?0x71a3bd:0x41738c) : (lit?0xd3c49b:0xfff9e9));
