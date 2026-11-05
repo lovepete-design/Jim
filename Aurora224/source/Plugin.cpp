@@ -1,4 +1,7 @@
 #include "Reverb.h"
+#if defined(__APPLE__)
+#include "Editor.h"
+#endif
 #include "public.sdk/source/vst/vstaudioeffect.h"
 #include "public.sdk/source/vst/vsteditcontroller.h"
 #include "public.sdk/source/vst/vstparameters.h"
@@ -8,6 +11,7 @@
 #include "base/source/fstreamer.h"
 #include <algorithm>
 #include <cmath>
+#include <cstring>
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 namespace {
@@ -96,6 +100,11 @@ public:
 class Controller final : public EditController {
 public:
     static FUnknown* create(void*) { return static_cast<IEditController*>(new Controller); }
+#if defined(__APPLE__)
+    IPlugView* PLUGIN_API createView(FIDString name) override {
+        return name && !std::strcmp(name, ViewType::kEditor) ? makeLarryEditor(this) : nullptr;
+    }
+#endif
     tresult PLUGIN_API initialize(FUnknown* context) override {
         auto result = EditController::initialize(context); if (result != kResultOk) return result;
         auto* mode = new StringListParameter(STR16("Algorithm"), 0);
@@ -119,7 +128,7 @@ public:
 }
 BEGIN_FACTORY_DEF("Triad Audio", "", "")
 DEF_CLASS2(INLINE_UID_FROM_FUID(processorID), PClassInfo::kManyInstances, kVstAudioEffectClass,
-           "Larry's Sexy Reverb", Vst::kDistributable, "Fx|Reverb", "1.0.0", kVstVersionString, Processor::create)
+           "Larry's Sexy Reverb", Vst::kDistributable, "Fx|Reverb", "1.1.0", kVstVersionString, Processor::create)
 DEF_CLASS2(INLINE_UID_FROM_FUID(controllerID), PClassInfo::kManyInstances, kVstComponentControllerClass,
-           "Larry's Sexy Reverb Controller", 0, "", "1.0.0", kVstVersionString, Controller::create)
+           "Larry's Sexy Reverb Controller", 0, "", "1.1.0", kVstVersionString, Controller::create)
 END_FACTORY

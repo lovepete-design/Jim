@@ -19,11 +19,12 @@ lipo "$plugin/Contents/MacOS/Aurora224" -verify_arch arm64 x86_64
 codesign --force --sign - "$plugin"
 codesign --verify --strict "$plugin"
 "$validator" "$plugin" 2>&1 | tee dist/validator-native.log
+"$root/build-mac/editor_tests" "$plugin" "$root/dist/Interface.png" 2>&1 | tee dist/editor-native.log
 mkdir -p dist/Larrys-Sexy-Reverb-macOS/verification-tools
 ditto "$plugin" "dist/Larrys-Sexy-Reverb-macOS/Larry's Sexy Reverb.vst3"
-cp "$validator" build-mac/reverb_tests dist/Larrys-Sexy-Reverb-macOS/verification-tools/
+cp "$validator" build-mac/reverb_tests build-mac/editor_tests dist/Larrys-Sexy-Reverb-macOS/verification-tools/
 cp scripts/Install-Mac.command dist/Larrys-Sexy-Reverb-macOS/
 cp MAC-INSTALL.md LICENSE docs/VST3-SDK-LICENSE.txt dist/Larrys-Sexy-Reverb-macOS/
-cp dist/validator-native.log dist/dsp-native.log dist/Larrys-Sexy-Reverb-macOS/
+cp dist/Interface.png dist/editor-native.log dist/validator-native.log dist/dsp-native.log dist/Larrys-Sexy-Reverb-macOS/
 (cd "$root/.." && git archive HEAD Aurora224 .github/workflows/aurora224-macos.yml) > dist/Larrys-Sexy-Reverb-macOS/source.tar
 /usr/bin/ditto -c -k --sequesterRsrc --keepParent dist/Larrys-Sexy-Reverb-macOS dist/Larrys-Sexy-Reverb-macOS.zip
