@@ -37,10 +37,10 @@ const char* mainNames[]{"DECAY","PRE DLY","SIZE","DAMP","MOD","MIX"};
 const char* toneNames[]{"DIFFUSE","BASS","WIDTH","DAMP","MOD","MIX"};
 }
 
-@interface LRButton : NSButton
+@interface LRIIButton : NSButton
 @property(nonatomic) BOOL blue;
 @end
-@implementation LRButton
+@implementation LRIIButton
 - (void)drawRect:(NSRect)dirty {
     (void)dirty;
     BOOL lit=self.state==NSControlStateValueOn || [self.cell isHighlighted];
@@ -54,13 +54,13 @@ const char* toneNames[]{"DIFFUSE","BASS","WIDTH","DAMP","MOD","MIX"};
 }
 @end
 
-@interface LRFader : NSControl {
+@interface LRIIFader : NSControl {
 @public BOOL tracking;
 }
 @property(nonatomic) double normalized;
 @property(nonatomic,assign) EditController* controller;
 @end
-@implementation LRFader
+@implementation LRIIFader
 - (BOOL)isFlipped { return YES; }
 - (BOOL)acceptsFirstResponder { return YES; }
 - (double)doubleValue { return self.normalized; }
@@ -114,29 +114,29 @@ const char* toneNames[]{"DIFFUSE","BASS","WIDTH","DAMP","MOD","MIX"};
 }
 @end
 
-@interface LRPanel : NSView {
+@interface LRIIPanel : NSView {
     EditController* controller;
     NSTimer* timer;
-    LRFader* faders[6];
-    LRButton* modes[3];
-    LRButton* bypass;
+    LRIIFader* faders[6];
+    LRIIButton* modes[3];
+    LRIIButton* bypass;
     int page;
 }
 - (id)initWithController:(EditController*)c;
 - (void)shutdown;
 - (void)refresh:(id)sender;
 @end
-@implementation LRPanel
+@implementation LRIIPanel
 - (BOOL)isFlipped { return YES; }
-- (LRButton*)button:(NSString*)label rect:(NSRect)r tag:(NSInteger)tag action:(SEL)action blue:(BOOL)blue {
-    LRButton* b=[[[LRButton alloc] initWithFrame:r] autorelease];
+- (LRIIButton*)button:(NSString*)label rect:(NSRect)r tag:(NSInteger)tag action:(SEL)action blue:(BOOL)blue {
+    LRIIButton* b=[[[LRIIButton alloc] initWithFrame:r] autorelease];
     b.title=label; b.tag=tag; b.blue=blue; b.target=self; b.action=action;
     b.bordered=NO; [b setAccessibilityLabel:label]; [self addSubview:b]; return b;
 }
 - (id)initWithController:(EditController*)c {
     if((self=[super initWithFrame:NSMakeRect(0,0,460,820)])) {
         controller=c; controller->addRef(); page=0;
-        [self setAccessibilityLabel:@"Larry's Sexy Reverb controls"];
+        [self setAccessibilityLabel:@"Larry's Sexy Reverb II controls"];
         for(int i=0;i<10;++i) [self button:[NSString stringWithFormat:@"%d",(i+1)%10] rect:NSMakeRect(218+(i%5)*40,211+(i/5)*32,37,29) tag:100+i action:@selector(preset:) blue:NO];
         NSArray* names=@[@"HALL",@"PLATE",@"CHAMBER"];
         for(int i=0;i<3;++i) modes[i]=[self button:names[i] rect:NSMakeRect(30+i*135,287,130,32) tag:200+i action:@selector(mode:) blue:YES];
@@ -144,7 +144,7 @@ const char* toneNames[]{"DIFFUSE","BASS","WIDTH","DAMP","MOD","MIX"};
         [self button:@"WET 100%" rect:NSMakeRect(165,331,130,30) tag:301 action:@selector(utility:) blue:NO];
         [self button:@"RESET" rect:NSMakeRect(300,331,130,30) tag:302 action:@selector(utility:) blue:NO];
         for(int i=0;i<6;++i) {
-            faders[i]=[[[LRFader alloc] initWithFrame:NSMakeRect(33+i*67,467,48,220)] autorelease];
+            faders[i]=[[[LRIIFader alloc] initWithFrame:NSMakeRect(33+i*67,467,48,220)] autorelease];
             faders[i].controller=controller; faders[i].tag=mainIDs[i];
             faders[i].target=self; faders[i].action=@selector(fader:);
             [faders[i] setAccessibilityLabel:[NSString stringWithUTF8String:mainNames[i]]];
@@ -178,15 +178,15 @@ const char* toneNames[]{"DIFFUSE","BASS","WIDTH","DAMP","MOD","MIX"};
     for(int j=0;j<10;++j) [self edit:j value:presets[index].values[j]];
     [self refresh:nil];
 }
-- (void)preset:(LRButton*)sender { [self applyPreset:(int)sender.tag-100]; }
-- (void)mode:(LRButton*)sender { [self edit:0 value:(sender.tag-200)*.5]; [self refresh:nil]; }
-- (void)utility:(LRButton*)sender {
+- (void)preset:(LRIIButton*)sender { [self applyPreset:(int)sender.tag-100]; }
+- (void)mode:(LRIIButton*)sender { [self edit:0 value:(sender.tag-200)*.5]; [self refresh:nil]; }
+- (void)utility:(LRIIButton*)sender {
     if(sender.tag==300) [self edit:10 value:controller->getParamNormalized(10)<.5?1.:0.];
     if(sender.tag==301) [self edit:9 value:1.];
     if(sender.tag==302) for(int i=0;i<10;++i) [self edit:i value:aurora::defaults[i]];
     [self refresh:nil];
 }
-- (void)navigation:(LRButton*)sender {
+- (void)navigation:(LRIIButton*)sender {
     int index=[self presetIndex];
     if(sender.tag==400) [self applyPreset:(index<0?9:(index+9)%10)];
     if(sender.tag==401) [self applyPreset:(index+1)%10];
@@ -194,7 +194,7 @@ const char* toneNames[]{"DIFFUSE","BASS","WIDTH","DAMP","MOD","MIX"};
     if(sender.tag==403) page=1-page;
     [self refresh:nil];
 }
-- (void)fader:(LRFader*)sender {
+- (void)fader:(LRIIFader*)sender {
     ParamID id=(ParamID)sender.tag;
     if(!sender->tracking) controller->beginEdit(id);
     controller->setParamNormalized(id,sender.doubleValue); controller->performEdit(id,sender.doubleValue);
@@ -244,7 +244,7 @@ const char* toneNames[]{"DIFFUSE","BASS","WIDTH","DAMP","MOD","MIX"};
         for(int j=0;j<8;++j) box(NSMakeRect(91+row*124+j*7,120,5,7),controller->getParamNormalized(barIDs[row])*8>j?0xc13b2c:0x341d18,1);
     }
     text(@"Larry's",NSMakeRect(30,207,180,35),30,0x3b403a);
-    text(@"SEXY REVERB",NSMakeRect(32,244,170,20),13,0x5b5e52,true);
+    text(@"SEXY REVERB II",NSMakeRect(32,244,170,20),13,0x5b5e52,true);
     text(@"TRIAD AUDIO / 224 INSPIRED",NSMakeRect(32,270,370,13),9,0x7e7d6e,true);
     box(NSMakeRect(28,383,404,65),0x555344,5); box(NSMakeRect(31,386,398,59),0x10130f,3);
     const int* ids=page?toneIDs:mainIDs; const char** names=page?toneNames:mainNames;
@@ -260,16 +260,16 @@ const char* toneNames[]{"DIFFUSE","BASS","WIDTH","DAMP","MOD","MIX"};
 @end
 
 namespace {
-class LarryEditor final : public CPluginView {
+class LarryIIEditor final : public CPluginView {
     EditController* controller;
-    LRPanel* panel=nil;
+    LRIIPanel* panel=nil;
 public:
-    explicit LarryEditor(EditController* c):controller(c) { rect={0,0,460,820}; controller->addRef(); }
-    ~LarryEditor() override { removed(); controller->release(); }
+    explicit LarryIIEditor(EditController* c):controller(c) { rect={0,0,460,820}; controller->addRef(); }
+    ~LarryIIEditor() override { removed(); controller->release(); }
     tresult PLUGIN_API isPlatformTypeSupported(FIDString type) override { return type && !std::strcmp(type,kPlatformTypeNSView)?kResultTrue:kResultFalse; }
     tresult PLUGIN_API attached(void* parent,FIDString type) override {
         if(!parent || isPlatformTypeSupported(type)!=kResultTrue || panel) return kResultFalse;
-        panel=[[LRPanel alloc] initWithController:controller];
+        panel=[[LRIIPanel alloc] initWithController:controller];
         [(NSView*)parent addSubview:panel]; systemWindow=parent; return kResultOk;
     }
     tresult PLUGIN_API removed() override {
@@ -282,4 +282,4 @@ public:
     }
 };
 }
-IPlugView* makeLarryEditor(EditController* controller) { return new LarryEditor(controller); }
+IPlugView* makeLarryIIEditor(EditController* controller) { return new LarryIIEditor(controller); }

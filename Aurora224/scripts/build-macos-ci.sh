@@ -11,11 +11,11 @@ cmake -S . -B build-mac -G 'Unix Makefiles' -DVST3_SDK_ROOT="$sdk" \
   '-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64' -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0 -DCMAKE_BUILD_TYPE=Release
 cmake --build build-mac --config Release --parallel 4 2>&1 | tee dist/build-macos.log
 ctest --test-dir build-mac -C Release --output-on-failure 2>&1 | tee dist/dsp-native.log
-plugin="$root/build-mac/VST3/Release/Aurora224.vst3"
+plugin="$root/build-mac/VST3/Release/LarryReverbII.vst3"
 validator="$root/build-mac/bin/Release/validator"
 test -d "$plugin"
 test -x "$validator"
-lipo "$plugin/Contents/MacOS/Aurora224" -verify_arch arm64 x86_64
+lipo "$plugin/Contents/MacOS/LarryReverbII" -verify_arch arm64 x86_64
 codesign --force --sign - "$plugin"
 codesign --verify --strict "$plugin"
 "$validator" "$plugin" 2>&1 | tee dist/validator-native.log
@@ -25,11 +25,11 @@ else
     lldb --batch -o run -k 'thread backtrace all' -- "$root/build-mac/editor_tests" "$plugin" "$root/dist/Interface.png" || true
     exit 1
 fi
-mkdir -p dist/Larrys-Sexy-Reverb-macOS/verification-tools
-ditto "$plugin" "dist/Larrys-Sexy-Reverb-macOS/Larry's Sexy Reverb.vst3"
-cp "$validator" build-mac/reverb_tests build-mac/editor_tests dist/Larrys-Sexy-Reverb-macOS/verification-tools/
-cp scripts/Install-Mac.command dist/Larrys-Sexy-Reverb-macOS/
-cp MAC-INSTALL.md LICENSE docs/VST3-SDK-LICENSE.txt dist/Larrys-Sexy-Reverb-macOS/
-cp dist/Interface.png dist/editor-native.log dist/validator-native.log dist/dsp-native.log dist/Larrys-Sexy-Reverb-macOS/
-(cd "$root/.." && git archive HEAD Aurora224 .github/workflows/aurora224-macos.yml) > dist/Larrys-Sexy-Reverb-macOS/source.tar
-/usr/bin/ditto -c -k --sequesterRsrc --keepParent dist/Larrys-Sexy-Reverb-macOS dist/Larrys-Sexy-Reverb-macOS.zip
+mkdir -p dist/Larrys-Sexy-Reverb-II-macOS/verification-tools
+ditto "$plugin" "dist/Larrys-Sexy-Reverb-II-macOS/Larry's Sexy Reverb II.vst3"
+cp "$validator" build-mac/reverb_tests build-mac/editor_tests dist/Larrys-Sexy-Reverb-II-macOS/verification-tools/
+cp scripts/Install-Mac.command dist/Larrys-Sexy-Reverb-II-macOS/
+cp MAC-INSTALL.md LICENSE docs/VST3-SDK-LICENSE.txt dist/Larrys-Sexy-Reverb-II-macOS/
+cp dist/Interface.png dist/editor-native.log dist/validator-native.log dist/dsp-native.log dist/Larrys-Sexy-Reverb-II-macOS/
+(cd "$root/.." && git archive HEAD Aurora224 .github/workflows/larry-reverb-ii-macos.yml) > dist/Larrys-Sexy-Reverb-II-macOS/source.tar
+/usr/bin/ditto -c -k --sequesterRsrc --keepParent dist/Larrys-Sexy-Reverb-II-macOS dist/Larrys-Sexy-Reverb-II-macOS.zip

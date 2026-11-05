@@ -15,8 +15,8 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 namespace {
-const FUID processorID(0x8D7A13B4, 0x936B44EE, 0xAFD29210, 0x11832240);
-const FUID controllerID(0x9D7A13B4, 0x936B44EE, 0xAFD29210, 0x11832241);
+const FUID processorID(0x11DE105F, 0x3BB14404, 0xA59978D0, 0x88DED111);
+const FUID controllerID(0xB47FC590, 0x30E9482E, 0xB63304A7, 0xEF51FB96);
 constexpr ParamID bypassID = 10;
 bool readState(IBStream* stream, std::array<double, aurora::parameterCount>& values, bool& bypass) {
     if (!stream) return false;
@@ -102,7 +102,7 @@ public:
     static FUnknown* create(void*) { return static_cast<IEditController*>(new Controller); }
 #if defined(__APPLE__)
     IPlugView* PLUGIN_API createView(FIDString name) override {
-        return name && !std::strcmp(name, ViewType::kEditor) ? makeLarryEditor(this) : nullptr;
+        return name && !std::strcmp(name, ViewType::kEditor) ? makeLarryIIEditor(this) : nullptr;
     }
 #endif
     tresult PLUGIN_API initialize(FUnknown* context) override {
@@ -128,7 +128,7 @@ public:
 }
 BEGIN_FACTORY_DEF("Triad Audio", "", "")
 DEF_CLASS2(INLINE_UID_FROM_FUID(processorID), PClassInfo::kManyInstances, kVstAudioEffectClass,
-           "Larry's Sexy Reverb", Vst::kDistributable, "Fx|Reverb", "1.1.0", kVstVersionString, Processor::create)
+           "Larry's Sexy Reverb II", Vst::kDistributable, "Fx|Reverb", "2.0.0", kVstVersionString, Processor::create)
 DEF_CLASS2(INLINE_UID_FROM_FUID(controllerID), PClassInfo::kManyInstances, kVstComponentControllerClass,
-           "Larry's Sexy Reverb Controller", 0, "", "1.1.0", kVstVersionString, Controller::create)
+           "Larry's Sexy Reverb II Controller", 0, "", "2.0.0", kVstVersionString, Controller::create)
 END_FACTORY

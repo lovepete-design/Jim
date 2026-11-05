@@ -60,7 +60,7 @@ int main(int argc,char** argv) {
             controller->setComponentHandler(handler);
             NSWindow* window=[[NSWindow alloc] initWithContentRect:NSMakeRect(0,0,460,820) styleMask:NSWindowStyleMaskTitled backing:NSBackingStoreBuffered defer:NO];
             window.releasedWhenClosed=NO;
-            window.title=@"Larry's Sexy Reverb";
+            window.title=@"Larry's Sexy Reverb II";
             for(int cycle=0;cycle<3;++cycle) {
               @autoreleasepool {
                 std::cerr<<"Editor test: attach cycle "<<cycle<<"\n";

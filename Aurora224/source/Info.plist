@@ -3,14 +3,14 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleDevelopmentRegion</key><string>English</string>
-    <key>CFBundleExecutable</key><string>Aurora224</string>
-    <key>CFBundleIdentifier</key><string>audio.triad.larryssexyreverb</string>
+    <key>CFBundleExecutable</key><string>LarryReverbII</string>
+    <key>CFBundleIdentifier</key><string>audio.triad.larryssexyreverb2</string>
     <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
-    <key>CFBundleName</key><string>Larry's Sexy Reverb</string>
-    <key>CFBundleDisplayName</key><string>Larry's Sexy Reverb</string>
+    <key>CFBundleName</key><string>Larry's Sexy Reverb II</string>
+    <key>CFBundleDisplayName</key><string>Larry's Sexy Reverb II</string>
     <key>CFBundlePackageType</key><string>BNDL</string>
-    <key>CFBundleShortVersionString</key><string>1.1.0</string>
-    <key>CFBundleVersion</key><string>1.1.0</string>
+    <key>CFBundleShortVersionString</key><string>2.0.0</string>
+    <key>CFBundleVersion</key><string>2.0.0</string>
     <key>LSMinimumSystemVersion</key><string>11.0</string>
     <key>NSHumanReadableCopyright</key><string>Copyright 2026 Triad Audio</string>
     <key>CSResourcesFileMapped</key><true/>

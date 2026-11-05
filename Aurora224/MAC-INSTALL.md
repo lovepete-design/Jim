@@ -1,18 +1,14 @@
-# Larry's Sexy Reverb — Mac installation
+# Larry's Sexy Reverb II — separate Mac plugin
 
-The release ZIP contains a compiled universal VST3 for macOS 11 or newer, supporting Intel and Apple Silicon. No Xcode, CMake, or compiler is needed to install it.
+Universal Intel + Apple Silicon VST3, macOS 11 or newer. This is a separate plugin with new VST3 processor/controller IDs, bundle identifier, executable, filename, and native editor class names. It installs alongside Larry's Sexy Reverb and Aurora 224; older projects keep using their original plugins.
 
-1. Quit Ableton Live (or your VST3 host) and extract the ZIP.
-2. Open Terminal, type `bash ` with a trailing space, drag `Install-Mac.command` into the Terminal window, and press Return.
-3. Reopen Ableton. Enable VST3 System Folders in Settings → Plug-Ins. Hold Option while clicking Rescan if needed. Search for **Larry's Sexy Reverb**.
-4. Open the custom editor for a cream hardware-style panel, red display, preset keypad, and six faders. PAGE switches between main reverb controls and diffusion, bass, and width. Double-click a fader to reset it.
+1. Quit Ableton Live and extract this ZIP.
+2. Open Terminal, type `bash ` (with a space), drag `Install-Mac.command` into Terminal, and press Return.
+3. Restart Live, enable Use VST3 Plug-In System Folders in Settings → Plug-Ins, then hold Option while clicking Rescan.
+4. Search for **Larry's Sexy Reverb II** and open its custom editor.
 
-The installer checks the bundled ad hoc signature, installs into `~/Library/Audio/Plug-Ins/VST3/`, verifies the installed signature, and removes download quarantine from this plugin only. Any older Larry's Sexy Reverb bundle is backed up under `~/Library/Application Support/Triad Audio/Plugin Backups/`.
+The installer verifies the local ad hoc signature, copies only Larry's Sexy Reverb II.vst3 into ~/Library/Audio/Plug-Ins/VST3, verifies it again, and clears its download quarantine. It backs up an existing II installation only. No Xcode is needed. This is not Apple-notarized.
 
-This is locally signed, not Developer ID signed or Apple notarized. Build verification does not mean Apple notarization or compatibility with every DAW. The CI release is published only after the universal bundle passes the official Steinberg validator and DSP tests natively on both Intel and Apple Silicon runners. Logs are included. Logic Pro cannot load VST3 and requires a separate Audio Unit version.
+The editor has ten preset buttons, Hall/Plate/Chamber modes, six vertical faders, bypass, 100% wet, reset, and a second control page. PAGE switches to diffusion/bass/width. Double-click a fader to reset it. Host automation updates the display.
 
-An original Lexicon 224-inspired stereo reverb, independent of Lexicon. See the source README for DSP details. Source and licenses are included.
-
-This renamed version uses a separate plugin ID and can coexist with Aurora 224. Existing projects using Aurora 224 keep using that plugin.
-
-Version 1.1 adds a native Mac interface inspired by vintage reverb remote controllers. The original Larry's Sexy Reverb plugin ID and parameter/state format are preserved, so the installer updates version 1.0 in place. Ten factory presets and host automation are available in the editor.
+Audio, VST3 validator, native editor lifecycle, preset, control, and automation tests run on Intel and Apple Silicon before publication. A separate plugin identity allows a fresh scan; DAW-specific loading errors still require the exact host message to diagnose.

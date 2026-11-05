@@ -1,0 +1,141 @@
+name: "Larry's Sexy Reverb II \u2014 separate Mac plugin"
+permissions:
+  contents: read
+concurrency:
+  group: larry-reverb-ii-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 25
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build universal plugin, sign, and validate native architecture
+      run: |-
+        bash Aurora224/scripts/build-macos-ci.sh
+    - uses: actions/upload-artifact@v4
+      with:
+        name: Larrys-Sexy-Reverb-II-universal-build
+        path: Aurora224/dist/Larrys-Sexy-Reverb-II-macOS.zip
+        if-no-files-found: error
+  verify:
+    needs: build
+    strategy:
+      matrix:
+        include:
+        - runner: macos-15
+          arch: arm64
+        - runner: macos-15-intel
+          arch: x86_64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 10
+    steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: Larrys-Sexy-Reverb-II-universal-build
+    - name: Validate exact universal bundle on native CPU
+      shell: bash
+      env:
+        EXPECTED_ARCH: ${{ matrix.arch }}
+      run: |
+        set -euo pipefail
+        test "$(uname -m)" = "$EXPECTED_ARCH"
+        ditto -x -k Larrys-Sexy-Reverb-II-macOS.zip .
+        cd Larrys-Sexy-Reverb-II-macOS
+        python3 - <<'PYTHON'
+        import plistlib
+        from pathlib import Path
+        info = plistlib.loads(Path("Larry's Sexy Reverb II.vst3/Contents/Info.plist").read_bytes())
+        assert info['CFBundleIdentifier'] == 'audio.triad.larryssexyreverb2'
+        assert info['CFBundlePackageType'] == 'BNDL'
+        assert info['CFBundleVersion'] == '2.0.0'
+        assert info['CFBundleExecutable'] == 'LarryReverbII'
+        assert info['LSMinimumSystemVersion'] == '11.0'
+        metadata=Path("Larry's Sexy Reverb II.vst3/Contents/Resources/moduleinfo.json").read_text()
+        assert '11DE105F3BB14404A59978D088DED111' in metadata
+        assert 'B47FC59030E9482EB63304A7EF51FB96' in metadata
+        assert "Larry's Sexy Reverb II" in metadata
+        print('Separate bundle identity, name, and both VST3 class IDs verified')
+        PYTHON
+        plugin="$PWD/Larry's Sexy Reverb II.vst3"
+        codesign --verify --strict "$plugin"
+        lipo "$plugin/Contents/MacOS/LarryReverbII" -verify_arch arm64 x86_64
+        chmod +x verification-tools/*
+        verification-tools/validator "$plugin" 2>&1 | tee "validator-$EXPECTED_ARCH.log"
+        verification-tools/reverb_tests 2>&1 | tee "dsp-$EXPECTED_ARCH.log"
+        verification-tools/editor_tests "$plugin" "$PWD/Interface-$EXPECTED_ARCH.png" 2>&1 | tee "editor-$EXPECTED_ARCH.log"
+        shasum -a 256 "$plugin/Contents/MacOS/LarryReverbII" > "binary-$EXPECTED_ARCH.sha256"
+    - uses: actions/upload-artifact@v4
+      with:
+        name: Larrys-Sexy-Reverb-II-verification-${{ matrix.arch }}
+        path: 'Larrys-Sexy-Reverb-II-macOS/validator-*.log
+
+          Larrys-Sexy-Reverb-II-macOS/dsp-*.log
+
+          Larrys-Sexy-Reverb-II-macOS/binary-*.sha256
+
+
+          Larrys-Sexy-Reverb-II-macOS/editor-*.log
+
+          Larrys-Sexy-Reverb-II-macOS/Interface-*.png'
+  release:
+    needs:
+    - build
+    - verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: Larrys-Sexy-Reverb-II-universal-build
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: Larrys-Sexy-Reverb-II-verification-*
+        path: verification
+        merge-multiple: true
+    - name: Package verified plugin and publish download
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: "set -euo pipefail\npython3 - <<'PYTHON'\nimport zipfile,hashlib,plistlib\n\
+        from copy import copy\nfrom pathlib import Path\nprefix='Larrys-Sexy-Reverb-II-macOS/'\n\
+        with zipfile.ZipFile('Larrys-Sexy-Reverb-II-macOS.zip') as src:\n    assert\
+        \ src.testzip() is None\n    plugin=prefix+\"Larry's Sexy Reverb II.vst3/Contents/\"\
+        \n    binary=src.read(plugin+'MacOS/LarryReverbII')\n    info=plistlib.loads(src.read(plugin+'Info.plist'))\n\
+        \    assert info['CFBundleIdentifier']=='audio.triad.larryssexyreverb2'\n\
+        \    assert info['CFBundleVersion']=='2.0.0'\n    digest=hashlib.sha256(binary).hexdigest()\n\
+        \    for arch in ['arm64','x86_64']:\n        assert Path(f'verification/binary-{arch}.sha256').read_text().split()[0]==digest\n\
+        \        assert '47 tests passed, 0 tests failed' in Path(f'verification/validator-{arch}.log').read_text()\n\
+        \        assert 'PASS:' in Path(f'verification/dsp-{arch}.log').read_text()\n\
+        \        assert 'PASS: native editor' in Path(f'verification/editor-{arch}.log').read_text()\n\
+        \    additions={prefix+p.name:p for p in Path('verification').iterdir() if\
+        \ p.is_file()}\n    with zipfile.ZipFile('Larrys-Sexy-Reverb-II-macOS-verified.zip','w',zipfile.ZIP_DEFLATED)\
+        \ as out:\n        for entry in src.infolist():\n            if '/verification-tools/'\
+        \ not in entry.filename and entry.filename not in additions:\n           \
+        \     out.writestr(copy(entry),src.read(entry.filename))\n        for name,p\
+        \ in additions.items(): out.write(p,name)\n    Path('Interface.png').write_bytes(src.read(prefix+'Interface.png'))\n\
+        p=Path('Larrys-Sexy-Reverb-II-macOS-verified.zip')\nPath(str(p)+'.sha256').write_text(hashlib.sha256(p.read_bytes()).hexdigest()+'\
+        \  '+p.name+'\\n')\nwith zipfile.ZipFile(p) as z: assert z.testzip() is None\n\
+        print('Exact signed Mac binary and native editor tests verified.')\nPYTHON\n\
+        cat > notes.md <<'NOTES'\nLarry's Sexy Reverb II is a separate Mac VST3 with\
+        \ a new processor ID, controller ID, bundle identifier, executable, filename,\
+        \ and native GUI class names. It installs alongside the original Larry's Sexy\
+        \ Reverb and Aurora 224.\n\nUniversal Intel + Apple Silicon, macOS 11+. Includes\
+        \ the cream hardware-style interface, red display, ten presets, six faders,\
+        \ and a second control page. All 47 Steinberg validator tests, DSP tests,\
+        \ and native editor tests passed on both CPUs. Download contains the signed\
+        \ binary, installer, source, screenshot, and test logs. No Xcode needed. Local\
+        \ ad hoc signature; not Apple notarized.\n\nQuit Ableton, extract the ZIP,\
+        \ run Install-Mac.command with bash in Terminal, reopen Live, hold Option\
+        \ while clicking Rescan, and search for Larry's Sexy Reverb II. Existing plugins\
+        \ and Sets keep their original plugin identities.\nNOTES\ntag=\"larrys-sexy-reverb-ii-${GITHUB_SHA:0:12}\"\
+        \ngh release create \"$tag\" Larrys-Sexy-Reverb-II-macOS-verified.zip Larrys-Sexy-Reverb-II-macOS-verified.zip.sha256\
+        \ Interface.png \\\n  --repo \"$GITHUB_REPOSITORY\" --target \"$GITHUB_SHA\"\
+        \ --prerelease \\\n  --title \"Larry's Sexy Reverb II 1.1 \u2014 hardware-style\
+        \ Mac interface\" --notes-file notes.md\n"
+'on':
+  push:
+    branches:
+    - codex/larry-reverb-ii
