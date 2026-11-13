@@ -5,6 +5,7 @@
 #include <mutex>
 #if TRIAD_KIND == 0
 #include "../plugins/hex/HexEngine.h"
+#include "HexLibrary.h"
 #elif TRIAD_KIND == 1
 #include "../plugins/stress/Dynamics.h"
 #else
@@ -46,6 +47,13 @@ public:
     void loadLibraryVoice(const std::array<unsigned char,155>&, const juce::String& name, const juce::String& id);
     juce::String loadedVoiceName() const;
     juce::String loadedVoiceId() const;
+    struct LibraryViewCache {
+        std::mutex mutex;
+        juce::String root, search, folder;
+        std::vector<triad::HexLibrary::Entry> entries;
+        bool ready = false;
+    };
+    std::shared_ptr<LibraryViewCache> libraryViewCache = std::make_shared<LibraryViewCache>();
 #endif
     juce::AudioProcessorValueTreeState parameters;
     juce::MidiKeyboardState keyboardState;

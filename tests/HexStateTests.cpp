@@ -69,6 +69,20 @@ void browserCheck(TriadProcessor& processor)
     // Folder filtering and a library refresh must preserve the selected voice.
     folders->setSelectedId(4,juce::sendNotificationSync); dispatch();
     require(list->getListBoxModel()->getNumRows()==2,"Nested folder filtering lost sounds");
+    // Hide the managed library on disk. Reopening must use the processor cache
+    // synchronously, rather than starting a disk reload and an empty list.
+    const auto hidden = temporary.getChildFile ("Hidden library");
+    require(root.moveFileTo(hidden), "Could not hide library for reopen test");
+    {
+        HexBrowser reopenedBrowser(processor,root);
+        auto* reopenedList=dynamic_cast<juce::ListBox*>(reopenedBrowser.findChildWithID("hex-voices"));
+        require(reopenedList && reopenedList->getListBoxModel()->getNumRows()==2,
+                "Reopening browser rescanned disk instead of using cached sounds");
+        dispatch(100);
+        require(reopenedList->getListBoxModel()->getNumRows()==2,
+                "Background reload replaced cached sounds on reopening");
+    }
+    require(hidden.moveFileTo(root), "Could not restore test library");
     std::cout<<"PASS: persisted browser, nested folders, search, previous/next, and arrow-key sound selection.\n";
 }
 std::vector<float> render(TriadProcessor& processor)

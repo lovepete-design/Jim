@@ -78,6 +78,24 @@ HexBrowser::HexBrowser (TriadProcessor& p, juce::File libraryRoot)
            &previous, &next, &search, &folderFilter, &list, &emptyState })
         addAndMakeVisible (child);
     syncFromProcessor();
+    {
+        const std::lock_guard<std::mutex> lock (processor.libraryViewCache->mutex);
+        auto& cache = *processor.libraryViewCache;
+        const auto root = library->root().getFullPathName();
+        if (cache.root != root) {
+            cache.root = root; cache.ready = false; cache.entries.clear();
+            cache.search.clear(); cache.folder.clear();
+        }
+        if (cache.ready) {
+            entries = cache.entries;
+            rebuildFolders();
+            const int index = folders.indexOf (cache.folder);
+            folderFilter.setSelectedId (index >= 0 ? index + 2 : 1, juce::dontSendNotification);
+            search.setText (cache.search, false);
+            filter();
+            return;
+        }
+    }
     refresh();
 }
 
@@ -85,6 +103,11 @@ HexBrowser::~HexBrowser()
 {
     // Jobs own the backend, never this component or the processor. Completion
     // callbacks use a SafePointer and are harmless after the editor closes.
+    {
+        const std::lock_guard<std::mutex> lock (processor.libraryViewCache->mutex);
+        processor.libraryViewCache->search = search.getText();
+        processor.libraryViewCache->folder = folderFilter.getSelectedId() > 1 ? folderFilter.getText() : juce::String();
+    }
     library->requestCancel();
     worker.removeAllJobs (true, -1);
     list.setModel (nullptr);
@@ -211,10 +234,16 @@ void HexBrowser::runTask (std::function<juce::String(triad::HexLibrary&)> task)
     updateButtons();
     const juce::Component::SafePointer<HexBrowser> safe (this);
     const auto backend = library;
-    worker.addJob ([safe, backend, task = std::move (task)]
+    const auto cache = processor.libraryViewCache;
+    worker.addJob ([safe, backend, cache, task = std::move (task)]
     {
         const auto message = task (*backend);
         auto snapshot = backend->entries();
+        if (! message.containsIgnoreCase ("cancel")) {
+            const std::lock_guard<std::mutex> lock (cache->mutex);
+            cache->entries = snapshot;
+            cache->ready = true;
+        }
         juce::MessageManager::callAsync ([safe, snapshot = std::move (snapshot), message]() mutable
         {
             if (safe == nullptr) return;
